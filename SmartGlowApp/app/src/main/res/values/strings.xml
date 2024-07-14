@@ -1,0 +1,9 @@
+<resources>
+<!--    <string name="app_name">My LED</string>-->
+    <string name="app_name">SmartGlow</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="login_button">Log In</string>
+    <string name="register_button">Don’t have an account? Register now</string>
+</resources>

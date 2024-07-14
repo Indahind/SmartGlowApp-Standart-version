@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#26172E"
+    android:id="@+id/fragment_home">
+
+    <TextView
+        android:id="@+id/user_welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome, User"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp"/>
+
+    <ListView
+        android:id="@+id/house_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/add_house_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add House"/>
+</LinearLayout>

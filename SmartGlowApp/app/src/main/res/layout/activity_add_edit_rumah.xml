@@ -1,0 +1,83 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/background_color"
+    android:id="@+id/fragment_addHome">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="Add House"
+        android:layout_marginTop="10dp"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nama"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-light" />
+
+<!--    <EditText-->
+<!--        android:id="@+id/editTextName"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:hint="Name" />-->
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/appNameTextView"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/input_background"
+        android:hint="Name"
+        android:padding="12dp"
+        android:textColor="@color/input_text_color"
+        android:textColorHint="@color/hint_text_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alamat"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-light" />
+
+<!--    <EditText-->
+<!--        android:id="@+id/editTextEmail"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:hint="Email" />-->
+
+    <EditText
+        android:id="@+id/editAlamatAja"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/appNameTextView"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/input_background"
+        android:hint="Alamat"
+        android:padding="12dp"
+        android:textColor="@color/input_text_color"
+        android:textColorHint="@color/hint_text_color"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Save" />
+</LinearLayout>
