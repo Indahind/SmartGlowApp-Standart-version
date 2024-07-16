@@ -1,5 +1,6 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -57,10 +59,10 @@ public class AddHomeFragment extends Fragment {
             creadby = arguments.getString("creadby");
             if (creadby != null && !creadby.isEmpty()) {
                 Toast.makeText(requireContext(), creadby, Toast.LENGTH_SHORT).show();
-                Log.d("AddEditHomeFragment", "Creadby: " + creadby);
+                Log.d("AddHomeFragment", "Creadby: " + creadby);
             } else {
                 Toast.makeText(requireContext(), "Creadby is null or empty", Toast.LENGTH_SHORT).show();
-                Log.e("AddEditHomeFragment", "Creadby is null or empty");
+                Log.e("AddHomeFragment", "Creadby is null or empty");
             }
 
             if (userId != null) {
@@ -88,48 +90,73 @@ public class AddHomeFragment extends Fragment {
         }
 
         // Initialize Save Button
-        buttonSave.setOnClickListener(v -> saveHome());
+        buttonSave.setOnClickListener(v -> confirmSave());
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        confirmCancel();
+        super.onDestroyView();
     }
 
     private void saveHome() {
         String name = editTextName.getText().toString().trim();
         String alamat = editTextAlamat.getText().toString().trim();
 
-        if (!TextUtils.isEmpty(name)) {
-            databaseUsers.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
-                    long userCount = dataSnapshot.getChildrenCount();
-                    String newUserId = "rumah_id_" + (userCount + 1);
-
-                    if (creadby == null) {
-                        creadby = "Unknown"; // Handle null value for creadby
-                    }
-
-                    Rumah user = new Rumah(newUserId, name, alamat, "Aktif", creadby);
-                    databaseUsers.child(newUserId).setValue(user, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                            if (databaseError == null) {
-                                Toast.makeText(requireContext(), "Home saved", Toast.LENGTH_SHORT).show();
-                                requireActivity().getSupportFragmentManager().popBackStack();
-                            } else {
-                                Toast.makeText(requireContext(), "Failed to save home: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(requireContext(), "Failed to get user count: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            Toast.makeText(requireContext(), "Please enter a name", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(alamat)) {
+            Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        databaseUsers.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
+                long userCount = dataSnapshot.getChildrenCount();
+                String newUserId = "rumah_id_" + (userCount + 1);
+
+                if (creadby == null) {
+                    creadby = "Unknown"; // Handle null value for creadby
+                }
+
+                Rumah user = new Rumah(newUserId, name, alamat, "Aktif", creadby);
+                databaseUsers.child(newUserId).setValue(user, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        if (databaseError == null) {
+                            Toast.makeText(requireContext(), "Home saved", Toast.LENGTH_SHORT).show();
+                            requireActivity().getSupportFragmentManager().popBackStack();
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to save home: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(requireContext(), "Failed to get user count: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void confirmSave() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Confirm Save")
+                .setMessage("Are you sure you want to save this data?")
+                .setPositiveButton("Yes", (dialog, which) -> saveHome())
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void confirmCancel() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Confirm Cancel")
+                .setMessage("Are you sure you want to cancel and discard changes?")
+                .setPositiveButton("Yes", (dialog, which) -> requireActivity().getSupportFragmentManager().popBackStack())
+                .setNegativeButton("No", null)
+                .show();
     }
 
 }
