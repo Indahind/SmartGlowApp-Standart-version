@@ -14,13 +14,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Ruangan;
+import com.polytechnic.astra.ac.id.smartglowapp.Model.Rumah;
 import com.polytechnic.astra.ac.id.smartglowapp.R;
 
-public class AddEditRuanganFragment extends Fragment {
+public class AddRoomFragment extends Fragment {
 
     private EditText editTextRoomName;
     private Button buttonSave;
@@ -29,14 +32,20 @@ public class AddEditRuanganFragment extends Fragment {
     private String houseId;
     private String userId; // Assuming you have houseId passed from previous fragment
 
-    public AddEditRuanganFragment() {
+    public AddRoomFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/ruangan");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_add_edit_ruangan, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_room, container, false);
 
         // Initialize Firebase Database reference
         databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/ruangan");
@@ -47,17 +56,18 @@ public class AddEditRuanganFragment extends Fragment {
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            roomId = arguments.getString("room_id");
-            houseId = arguments.getString("house_id");
-            System.out.println(houseId);
-            userId = arguments.getString("userId");
+            Rumah rumah = (Rumah) arguments.getSerializable("rumah");
+
+            houseId = rumah.getRumahId();
+            System.out.println(rumah.getRumahId());
+            userId = rumah.getCreadby();
             System.out.println(userId);
 
             if (roomId != null) {
                 // Load existing room data if editing
-                databaseRooms.child(roomId).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                databaseRooms.child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Ruangan room = dataSnapshot.getValue(Ruangan.class);
                         if (room != null) {
                             editTextRoomName.setText(room.getNama());
@@ -84,19 +94,17 @@ public class AddEditRuanganFragment extends Fragment {
 
         if (!TextUtils.isEmpty(roomName)) {
             if (roomId == null) {
-                databaseRooms.addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
+                databaseRooms.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         long roomCount = dataSnapshot.getChildrenCount();
-                        String newRoomId = String.valueOf(roomCount + 1);
-                        String roomId = "room_id_" + newRoomId;
+                        String newRoomId = "ruangan_id_" + (roomCount + 1);
 
-                        Ruangan room = new Ruangan(roomId,houseId, roomName, "1",userId );
-                        databaseRooms.child(roomId).setValue(room, new DatabaseReference.CompletionListener() {
+                        Ruangan room = new Ruangan(newRoomId, houseId, roomName, "Aktif", userId);
+                        databaseRooms.child(newRoomId).setValue(room, new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                                 if (databaseError == null) {
-                                    System.out.println("indah disini");
                                     Toast.makeText(requireContext(), "Room saved", Toast.LENGTH_SHORT).show();
                                     requireActivity().getSupportFragmentManager().popBackStack();
                                 } else {
@@ -112,7 +120,7 @@ public class AddEditRuanganFragment extends Fragment {
                     }
                 });
             } else {
-                Ruangan room = new Ruangan(roomId,houseId, roomName, "1",userId);
+                Ruangan room = new Ruangan(roomId, houseId, roomName, "1", userId);
                 databaseRooms.child(roomId).setValue(room, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {

@@ -12,12 +12,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Rumah;
+import com.polytechnic.astra.ac.id.smartglowapp.Model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<Rumah>> houses;
+    private MutableLiveData<Rumah> roominHouses = new MutableLiveData<>();
     private MutableLiveData<String> errorMessage;
     private DatabaseReference databaseUsers;
 
@@ -25,6 +27,14 @@ public class HomeViewModel extends ViewModel {
         houses = new MutableLiveData<>(new ArrayList<>());
         errorMessage = new MutableLiveData<>();
         databaseUsers = FirebaseDatabase.getInstance().getReference("smart_home/rumah");
+    }
+
+    public void setHouses(Rumah houses) {
+        roominHouses.setValue(houses);
+    }
+
+    public LiveData<Rumah> getHouse(){
+        return roominHouses;
     }
 
     public LiveData<List<Rumah>> getHouses() {

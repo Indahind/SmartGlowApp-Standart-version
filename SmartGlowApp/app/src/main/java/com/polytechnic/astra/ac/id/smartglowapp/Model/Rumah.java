@@ -1,6 +1,8 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Model;
 
-public class Rumah {
+import java.io.Serializable;
+
+public class Rumah implements Serializable {
     private String rumahId;
     private String nama;
     private String alamat_rumah;

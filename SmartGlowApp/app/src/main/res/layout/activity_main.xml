@@ -17,6 +17,16 @@
         android:layout_height="match_parent" />
 
     <FrameLayout
+        android:id="@+id/fragment_addHome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/fragment_updateHome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
         android:id="@+id/fragment_addUser"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -28,6 +38,11 @@
 
     <FrameLayout
         android:id="@+id/fragment_addRoom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/fragment_updateRoom"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

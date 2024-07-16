@@ -1,6 +1,8 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String userId;
     private String nama;
     private String email;

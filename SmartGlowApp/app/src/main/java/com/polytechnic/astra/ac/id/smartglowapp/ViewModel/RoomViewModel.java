@@ -36,7 +36,7 @@ public class RoomViewModel extends ViewModel {
     }
 
     public void loadRooms(String houseId) {
-        Query query = databaseRooms.orderByChild("house_id").equalTo(houseId);
+        Query query = databaseRooms.orderByChild("rumahId").equalTo(houseId);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -45,6 +45,7 @@ public class RoomViewModel extends ViewModel {
                     Ruangan room = postSnapshot.getValue(Ruangan.class);
                     if (room != null) {
                         roomList.add(room);
+                        System.out.println(room.getNama()+room.getCreadby()+room.getRuanganId()+room.getRumahId());
                     }
                 }
                 rooms.setValue(roomList);
