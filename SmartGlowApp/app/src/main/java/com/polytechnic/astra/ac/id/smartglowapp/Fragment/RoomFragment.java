@@ -162,6 +162,18 @@ public class RoomFragment extends Fragment {
                 .commit();
     }
 
+    private void navigateToLampuFragment(Ruangan house) {
+        LampuFragment roomFragment = new LampuFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("ruangan", house);
+        roomFragment.setArguments(args);
+
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_home, roomFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     private class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomHolder> {
 
         private List<Ruangan> activeRoomList = new ArrayList<>();
@@ -221,7 +233,7 @@ public class RoomFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Ruangan rumah = activeRoomList.get(getAdapterPosition());
-                        //navigateToRoomFragment(rumah);
+                        navigateToLampuFragment(rumah);
                     }
                 });
 

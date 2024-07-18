@@ -11,52 +11,41 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.polytechnic.astra.ac.id.smartglowapp.Model.Lampu;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Ruangan;
-import com.polytechnic.astra.ac.id.smartglowapp.Model.Rumah;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoomViewModel extends ViewModel {
-    private MutableLiveData<List<Ruangan>> rooms;
-    private MutableLiveData<Ruangan> roominHouses = new MutableLiveData<>();
+public class LampuViewModel extends ViewModel {
+    private MutableLiveData<List<Lampu>> rooms;
     private MutableLiveData<String> errorMessage;
     private DatabaseReference databaseRooms;
 
-    public RoomViewModel() {
+    public LampuViewModel() {
         rooms = new MutableLiveData<>(new ArrayList<>());
         errorMessage = new MutableLiveData<>();
-        databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/ruangan");
+        databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
     }
 
-    public LiveData<List<Ruangan>> getRooms() {
+    public LiveData<List<Lampu>> getRooms() {
         return rooms;
     }
-
-    public void setRooms(Ruangan houses) {
-        roominHouses.setValue(houses);
-    }
-
-    public LiveData<Ruangan> getRoom(){
-        return roominHouses;
-    }
-
 
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
 
     public void loadRooms(String houseId) {
-        Query query = databaseRooms.orderByChild("rumahId").equalTo(houseId);
+        Query query = databaseRooms.orderByChild("ruanganId").equalTo(houseId);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Ruangan> roomList = new ArrayList<>();
+                List<Lampu> roomList = new ArrayList<>();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Ruangan room = postSnapshot.getValue(Ruangan.class);
+                    Lampu room = postSnapshot.getValue(Lampu.class);
                     if (room != null) {
                         roomList.add(room);
-                        System.out.println(room.getNama()+room.getCreadby()+room.getRuanganId()+room.getRumahId());
                     }
                 }
                 rooms.setValue(roomList);
