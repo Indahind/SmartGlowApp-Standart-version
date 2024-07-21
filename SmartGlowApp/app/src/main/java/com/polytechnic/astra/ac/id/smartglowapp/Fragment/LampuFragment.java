@@ -150,10 +150,10 @@ public class LampuFragment extends Fragment {
         });
     }
     //
-    private void navigateToUpdateLampu(Lampu ruangan) {
+    private void navigateToUpdateLampu(Lampu lampu) {
         UpdateLampuFragment fragment = new UpdateLampuFragment();
         Bundle args = new Bundle();
-        args.putSerializable("lampu", ruangan);
+        args.putSerializable("lampu", lampu);
         fragment.setArguments(args);
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();

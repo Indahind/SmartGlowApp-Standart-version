@@ -1,5 +1,6 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -28,13 +29,14 @@ public class UpdateLampuFragment extends Fragment {
 
     private EditText editTextName, editJumlahPin, editPinAkhir;
     private Button buttonSave, buttonPickColor;
-    private DatabaseReference databaseRooms;
+    private DatabaseReference databaseLamp;
     private String perangkatId;
     private View colorPreview;
     private int currentColor;
     private Integer red = 0, blue = 0, green = 0, pin = 0;
     private String houseId;
-    private String createdBy;// Assuming you have houseId passed from previous fragment
+    private String createdBy;
+    private Lampu lampu;
 
     public UpdateLampuFragment() {
         // Required empty public constructor
@@ -43,16 +45,17 @@ public class UpdateLampuFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
+
+        if (getArguments() != null) {
+            lampu = (Lampu) getArguments().getSerializable("lampu");
+        }
+        databaseLamp = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_edit_perangkat, container, false);
-
-        // Initialize Firebase Database reference
-        databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
+        View view = inflater.inflate(R.layout.fragment_add_perangkat, container, false);
 
         // Initialize EditText and Buttons
         editTextName = view.findViewById(R.id.editTextName);
@@ -85,7 +88,8 @@ public class UpdateLampuFragment extends Fragment {
             buttonPickColor.setOnClickListener(v -> openColorPicker());
 
             // Set OnClickListener for Save Button
-            buttonSave.setOnClickListener(v -> savePerangkat());
+            buttonSave.setOnClickListener(v -> confirmUpdate());
+            buttonSave.setOnClickListener(v -> confirmUpdate());
         }
 
         return view;
@@ -115,7 +119,7 @@ public class UpdateLampuFragment extends Fragment {
         colorPicker.show();
     }
     private void loadPerangkatData(String perangkatId) {
-        databaseRooms.child(perangkatId).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseLamp.child(perangkatId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Lampu perangkat = dataSnapshot.getValue(Lampu.class);
@@ -143,7 +147,7 @@ public class UpdateLampuFragment extends Fragment {
         });
     }
 
-    private void savePerangkat() {
+    private void updateLampu() {
         String name = editTextName.getText().toString().trim();
 //        String serial = editSerialNumber.getText().toString().trim();
         String pinStr = editJumlahPin.getText().toString().trim();
@@ -167,7 +171,7 @@ public class UpdateLampuFragment extends Fragment {
 
         if (perangkatId == null) {
             // Membaca data house untuk mendapatkan jumlah house saat ini
-            databaseRooms.addListenerForSingleValueEvent(new ValueEventListener() {
+            databaseLamp.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     long houseCount = dataSnapshot.getChildrenCount();
@@ -176,7 +180,7 @@ public class UpdateLampuFragment extends Fragment {
 
                     Lampu perangkat = new Lampu(bro, houseId, name,"Aktif","off", createdBy, red, green, blue, jumlahPin, pin_akhir);
                     // Simpan house ke Firebase Database
-                    databaseRooms.child(bro).setValue(perangkat, new DatabaseReference.CompletionListener() {
+                    databaseLamp.child(bro).setValue(perangkat, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(@NonNull DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                             if (databaseError == null) {
@@ -196,7 +200,7 @@ public class UpdateLampuFragment extends Fragment {
             });
         } else {
             Lampu perangkat = new Lampu(perangkatId, houseId, name, "Aktif", "off", createdBy, red, green, blue, jumlahPin, pin_akhir);
-            databaseRooms.child(perangkatId).setValue(perangkat, (databaseError, databaseReference) -> {
+            databaseLamp.child(perangkatId).setValue(perangkat, (databaseError, databaseReference) -> {
                 if (databaseError == null) {
                     Toast.makeText(getActivity(), "Perangkat updated", Toast.LENGTH_SHORT).show();
                     getParentFragmentManager().popBackStack();
@@ -207,4 +211,49 @@ public class UpdateLampuFragment extends Fragment {
         }
     }
 
+    private void markLampAsDeleted() {
+        if (lampu != null) {
+            // Cek status lampu
+            if ("On".equals(lampu.getStatus_lampu())) {
+                // Jika lampu sedang menyala, tampilkan Toast dan tidak hapus
+                Toast.makeText(requireContext(), "Lampu sedang menyala, tidak bisa dihapus", Toast.LENGTH_SHORT).show();
+            } else {
+                // Jika lampu tidak menyala, lanjutkan dengan proses penghapusan
+                lampu.setStatus("Tidak Aktif");
+
+                databaseLamp.child(lampu.getRuanganId()).setValue(lampu, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        if (databaseError == null) {
+                            Toast.makeText(requireContext(), "Room marked as deleted successfully", Toast.LENGTH_SHORT).show();
+                            requireActivity().getSupportFragmentManager().popBackStack();
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to mark room as deleted: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        } else {
+            Toast.makeText(requireContext(), "Room data is null", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private void confirmUpdate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Simpan")
+                .setMessage("Apakah kamu yakin untuk menyimpan data ini?")
+                .setPositiveButton("Ya", (dialog, which) -> updateLampu())
+                .setNegativeButton("Tidak", null)
+                .show();
+    }
+
+    private void confirmDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Simpan")
+                .setMessage("Apakah kamu yakin untuk menghapus data ini?")
+                .setPositiveButton("Ya", (dialog, which) -> markLampAsDeleted())
+                .setNegativeButton("Tidak", null)
+                .show();
+    }
 }

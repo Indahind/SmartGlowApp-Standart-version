@@ -1,5 +1,6 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -84,7 +85,7 @@ public class AddRoomFragment extends Fragment {
         }
 
         // Initialize Save Button
-        buttonSave.setOnClickListener(v -> saveRoom());
+        buttonSave.setOnClickListener(v -> confirmSave());
 
         return view;
     }
@@ -136,5 +137,14 @@ public class AddRoomFragment extends Fragment {
         } else {
             Toast.makeText(requireContext(), "Please enter a room name", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void confirmSave() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Simpan")
+                .setMessage("Apakah kamu yakin untuk menyimpan data ini?")
+                .setPositiveButton("Ya", (dialog, which) -> saveRoom())
+                .setNegativeButton("Tidak", null)
+                .show();
     }
 }

@@ -1,5 +1,6 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -54,7 +55,11 @@ public class HomeFragment extends Fragment {
         if (itemId == R.id.btn_add_house) {
             navigateToAddHouse();
             return true;
-        } else {
+        } else if (itemId == R.id.btn_logout) {
+            confirmSave();
+            return true;
+        }
+        else {
             return super.onOptionsItemSelected(item);
         }
     }
@@ -133,6 +138,23 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void confirmSave() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Logout")
+                .setMessage("Apakah anda yakin mau logout?")
+                .setPositiveButton("Ya", (dialog, which) -> navigateToLogin())
+                .setNegativeButton("Tidak", null)
+                .show();
+    }
+
+    private void navigateToLogin() {
+        LoginFragment roomFragment = new LoginFragment();
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, roomFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void navigateToRoomFragment(Rumah house) {

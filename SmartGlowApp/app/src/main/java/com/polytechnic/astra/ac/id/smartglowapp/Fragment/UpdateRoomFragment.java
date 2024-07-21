@@ -1,5 +1,6 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ public class UpdateRoomFragment extends Fragment {
 
     private EditText editTextName;
     private Button buttonSave, buttonDelete;
-    private DatabaseReference databaseHouses;
+    private DatabaseReference databaseRooms;
     private Ruangan room;
 
     public UpdateRoomFragment() {
@@ -36,7 +37,7 @@ public class UpdateRoomFragment extends Fragment {
             room = (Ruangan) getArguments().getSerializable("ruangan");
         }
         // Initialize Firebase Database reference
-        databaseHouses = FirebaseDatabase.getInstance().getReference("smart_home/ruangan");
+        databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/ruangan");
     }
 
     @Override
@@ -54,9 +55,9 @@ public class UpdateRoomFragment extends Fragment {
         }
 
         // Save button click listener
-        buttonSave.setOnClickListener(v -> updateRoom());
+        buttonSave.setOnClickListener(v -> confirmUpdate());
 
-        buttonDelete.setOnClickListener(v -> markRoomAsDeleted());
+        buttonDelete.setOnClickListener(v -> confirmDelete());
 
         return view;
     }
@@ -67,7 +68,7 @@ public class UpdateRoomFragment extends Fragment {
         if (room != null) {
             room.setNama(name);
 
-            databaseHouses.child(room.getRuanganId()).setValue(room, new DatabaseReference.CompletionListener() {
+            databaseRooms.child(room.getRuanganId()).setValue(room, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                     if (databaseError == null) {
@@ -87,7 +88,7 @@ public class UpdateRoomFragment extends Fragment {
         if (room != null) {
             room.setStatus("Tidak Aktif");
 
-            databaseHouses.child(room.getRuanganId()).setValue(room, new DatabaseReference.CompletionListener() {
+            databaseRooms.child(room.getRuanganId()).setValue(room, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                     if (databaseError == null) {
@@ -101,5 +102,23 @@ public class UpdateRoomFragment extends Fragment {
         } else {
             Toast.makeText(requireContext(), "Room data is null", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void confirmUpdate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Simpan")
+                .setMessage("Apakah kamu yakin untuk menyimpan data ini?")
+                .setPositiveButton("Ya", (dialog, which) -> updateRoom())
+                .setNegativeButton("Tidak", null)
+                .show();
+    }
+
+    private void confirmDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Simpan")
+                .setMessage("Apakah kamu yakin untuk menghapus data ini?")
+                .setPositiveButton("Ya", (dialog, which) -> markRoomAsDeleted())
+                .setNegativeButton("Tidak", null)
+                .show();
     }
 }

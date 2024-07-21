@@ -7,8 +7,8 @@
         android:id="@+id/btn_add_house"
         android:icon="@drawable/ic_add"
         app:showAsAction="ifRoom|withText" />
-<!--    <item-->
-<!--        android:id="@+id/btn_update_house"-->
-<!--        android:icon="@drawable/ic_update"-->
-<!--        app:showAsAction="ifRoom|withText" />-->
+    <item
+        android:id="@+id/btn_logout"
+        android:icon="@drawable/ic_logout"
+        app:showAsAction="ifRoom|withText" />
 </menu>

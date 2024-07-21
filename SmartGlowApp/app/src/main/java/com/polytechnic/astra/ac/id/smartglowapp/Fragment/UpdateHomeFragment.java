@@ -1,5 +1,6 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,9 +57,9 @@ public class UpdateHomeFragment extends Fragment {
         }
 
         // Save button click listener
-        buttonSave.setOnClickListener(v -> updateHouse());
+        buttonSave.setOnClickListener(v -> confirmUpdate());
 
-        buttonDelete.setOnClickListener(v -> markHouseAsDeleted());
+        buttonDelete.setOnClickListener(v -> confirmDelete());
 
         return view;
     }
@@ -105,5 +106,23 @@ public class UpdateHomeFragment extends Fragment {
         } else {
             Toast.makeText(requireContext(), "House data is null", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void confirmUpdate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Simpan")
+                .setMessage("Apakah kamu yakin untuk menyimpan data ini?")
+                .setPositiveButton("Ya", (dialog, which) -> updateHouse())
+                .setNegativeButton("Tidak", null)
+                .show();
+    }
+
+    private void confirmDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Simpan")
+                .setMessage("Apakah kamu yakin untuk menghapus data ini?")
+                .setPositiveButton("Ya", (dialog, which) -> markHouseAsDeleted())
+                .setNegativeButton("Tidak", null)
+                .show();
     }
 }

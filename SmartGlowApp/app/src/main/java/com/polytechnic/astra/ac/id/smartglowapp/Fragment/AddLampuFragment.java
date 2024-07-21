@@ -1,5 +1,6 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -50,7 +51,7 @@ public class AddLampuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_edit_perangkat, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_perangkat, container, false);
 
         // Initialize Firebase Database reference
         databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
@@ -84,7 +85,7 @@ public class AddLampuFragment extends Fragment {
             buttonPickColor.setOnClickListener(v -> openColorPicker());
 
             // Set OnClickListener for Save Button
-            buttonSave.setOnClickListener(v -> savePerangkat());
+            buttonSave.setOnClickListener(v -> confirmSave());
         }
 
         return view;
@@ -206,4 +207,12 @@ public class AddLampuFragment extends Fragment {
         }
     }
 
+    private void confirmSave() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Simpan")
+                .setMessage("Apakah kamu yakin untuk menyimpan data ini?")
+                .setPositiveButton("Ya", (dialog, which) -> savePerangkat())
+                .setNegativeButton("Tidak", null)
+                .show();
+    }
 }
