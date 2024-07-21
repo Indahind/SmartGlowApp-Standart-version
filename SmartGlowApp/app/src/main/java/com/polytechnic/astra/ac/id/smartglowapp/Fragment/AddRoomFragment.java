@@ -77,7 +77,7 @@ public class AddRoomFragment extends Fragment {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         Toast.makeText(requireContext(), "Failed to load room.", Toast.LENGTH_SHORT).show();
-                        Log.e("AddEditRuanganFragment", "Failed to load room: " + databaseError.getMessage());
+                        Log.e("AddRuanganFragment", "Failed to load room: " + databaseError.getMessage());
                     }
                 });
             }

@@ -7,9 +7,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,11 +24,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Lampu;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Ruangan;
-import com.polytechnic.astra.ac.id.smartglowapp.Model.Rumah;
 import com.polytechnic.astra.ac.id.smartglowapp.R;
-import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.HomeViewModel;
 import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.LampuViewModel;
 import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.RoomViewModel;
 
@@ -37,7 +39,7 @@ public class LampuFragment extends Fragment {
 
     private ListView lampuListView;
     private RecyclerView lampuRecyclerView;
-    private RoomAdapter lampuAdapter;
+    private LampuAdapter lampuAdapter;
     private LampuViewModel mLampuViewModel;
     private RoomViewModel mRoomViewModel;
     private TextView txtHouseName, txtHouseAddress;
@@ -49,19 +51,19 @@ public class LampuFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_room, menu);
+        inflater.inflate(R.menu.fragment_device_menu, menu);
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        int itemId = item.getItemId();
-//        if (itemId == R.id.btn_add_room) {
-//            navigateToAddRoom();
-//            return true;
-//        } else {
-//            return super.onOptionsItemSelected(item);
-//        }
-//    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.btn_add_device) {
+            navigateToAddLampu();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,9 +78,9 @@ public class LampuFragment extends Fragment {
             Ruangan rumah = (Ruangan) args.getSerializable("ruangan");
             if (rumah != null) {
                 String houseId = rumah.getRuanganId();
-                mLampuViewModel.loadRooms(houseId);
+                mLampuViewModel.loadLams(houseId);
             } else {
-                    Toast.makeText(requireContext(), "Tidak ada data ruangan ditemukan.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Tidak ada data lampu ditemukan.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -86,12 +88,12 @@ public class LampuFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_perangkat_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_perangkat_list, container, false);
 
-        lampuRecyclerView = view.findViewById(R.id.room_list);
+        lampuRecyclerView = view.findViewById(R.id.device_list);
         lampuRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        lampuAdapter = new RoomAdapter();
+        lampuAdapter = new LampuAdapter();
         lampuRecyclerView.setAdapter(lampuAdapter);
 
         txtHouseName = view.findViewById(R.id.txt_house_name);
@@ -125,46 +127,50 @@ public class LampuFragment extends Fragment {
 
         return view;
     }
-//
-//    private void navigateToAddRoom() {
-//        mHomeViewModel.getHouse().observe(getViewLifecycleOwner(), new Observer<Rumah>() {
-//            @Override
-//            public void onChanged(Rumah rumahDipilih) {
-//                System.out.println(rumahDipilih.getAlamat_rumah()+"inii");
-//                System.out.println(rumahDipilih.getRumahId()+"inii");
-//                System.out.println(rumahDipilih.getCreadby()+"inii");
-//                System.out.println(rumahDipilih.getNama()+"inii");
-//                if (rumahDipilih != null) {
-//                    AddRoomFragment fragment = new AddRoomFragment();
-//                    Bundle args = new Bundle();
-//                    args.putSerializable("rumah", rumahDipilih);
-//                    fragment.setArguments(args);
-//
-//                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-//                    transaction.replace(R.id.fragment_home, fragment);  // Pastikan ID container benar
-//                    transaction.addToBackStack(null);
-//                    transaction.commit();
-//                }
-//            }
-//        });
-//    }
-//
-//    private void navigateToUpdateRoom(Ruangan ruangan) {
-//        UpdateRoomFragment fragment = new UpdateRoomFragment();
-//        Bundle args = new Bundle();
-//        args.putSerializable("ruangan", ruangan);
-//        fragment.setArguments(args);
-//
-//        getParentFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_home, fragment)
-//                .addToBackStack(null)
-//                .commit();
-//    }
+    //
+    private void navigateToAddLampu() {
+        mRoomViewModel.getRoom().observe(getViewLifecycleOwner(), new Observer<Ruangan>() {
+            @Override
+            public void onChanged(Ruangan rumahDipilih) {
+                System.out.println(rumahDipilih.getRumahId()+"inii");
+                System.out.println(rumahDipilih.getCreadby()+"inii");
+                System.out.println(rumahDipilih.getNama()+"inii");
+                if (rumahDipilih != null) {
+                    AddLampuFragment fragment = new AddLampuFragment();
+                    Bundle args = new Bundle();
+                    args.putSerializable("ruangan", rumahDipilih);
+                    fragment.setArguments(args);
 
-    private class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomHolder> {
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            }
+        });
+    }
+    //
+    private void navigateToUpdateLampu(Lampu ruangan) {
+        UpdateLampuFragment fragment = new UpdateLampuFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("lampu", ruangan);
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private class LampuAdapter extends RecyclerView.Adapter<LampuAdapter.RoomHolder> {
 
         private List<Lampu> activeRoomList = new ArrayList<>();
         private List<Lampu> roomList = new ArrayList<>();
+        private DatabaseReference databaseReference;
+
+        public LampuAdapter() {
+            this.databaseReference = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
+        }
 
         @NonNull
         @Override
@@ -200,41 +206,46 @@ public class LampuFragment extends Fragment {
             }
         }
 
-
         public class RoomHolder extends RecyclerView.ViewHolder {
 
-            private TextView roomName, roomId;
-            private ImageView showDetails;
+            private ImageView imgDevice;
+            private TextView txtData;
+            private TextView txtDataDetail;
+            private Switch btnDevice;
             private LinearLayout editRoom;
 
             public RoomHolder(@NonNull View itemView) {
                 super(itemView);
-//                roomId = itemView.findViewById(R.id.txtDataDetail1);
-//                roomName = itemView.findViewById(R.id.txtData1);
-//                editRoom = itemView.findViewById(R.id.editRoom);
-//                showDetails = itemView.findViewById(R.id.btn_show);
+                editRoom = itemView.findViewById(R.id.editLampu);
 
-//                showDetails.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Lampu rumah = activeRoomList.get(getAdapterPosition());
-//                        //navigateToRoomFragment(rumah);
-//                    }
-//                });
-//
-//                editRoom.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Lampu rumah = activeRoomList.get(getAdapterPosition());
-//                        navigateToUpdateRoom(rumah);
-//                    }
-//                });
+                imgDevice = itemView.findViewById(R.id.imgDevice1);
+                txtData = itemView.findViewById(R.id.txtData1);
+                txtDataDetail = itemView.findViewById(R.id.txtDataDetail1);
+                btnDevice = itemView.findViewById(R.id.switchbutton);
 
+                editRoom.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Lampu rumah = activeRoomList.get(getAdapterPosition());
+                        navigateToUpdateLampu(rumah);
+                    }
+                });
             }
-                public void bind(Lampu house) {
-                    roomName.setText(house.getNama());
-                    roomId.setText(house.getRuanganId());
-                }
+
+            public void bind(Lampu lampu) {
+                txtData.setText(lampu.getNama());
+                txtDataDetail.setText(lampu.getStatus_lampu());
+                btnDevice.setChecked(lampu.getStatus_lampu().equals("on"));
+
+                btnDevice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        String status = isChecked ? "on" : "off";
+                        lampu.setStatus_lampu(status);
+                        databaseReference.child(lampu.getLampuId()).child("status_lampu").setValue(status);
+                    }
+                });
+            }
         }
     }
 

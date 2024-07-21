@@ -80,13 +80,13 @@ public class AddHomeFragment extends Fragment {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         Toast.makeText(requireContext(), "Failed to load user.", Toast.LENGTH_SHORT).show();
-                        Log.e("AddEditHomeFragment", "Failed to load user: " + databaseError.getMessage());
+                        Log.e("AddHomeFragment", "Failed to load user: " + databaseError.getMessage());
                     }
                 });
             }
         } else {
             Toast.makeText(requireContext(), "Arguments are null", Toast.LENGTH_SHORT).show();
-            Log.e("AddEditHomeFragment", "Arguments are null");
+            Log.e("AddHomeFragment", "Arguments are null");
         }
 
         // Initialize Save Button
@@ -97,7 +97,6 @@ public class AddHomeFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        confirmCancel();
         super.onDestroyView();
     }
 
@@ -142,20 +141,20 @@ public class AddHomeFragment extends Fragment {
     }
 
     private void confirmSave() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Confirm Save")
-                .setMessage("Are you sure you want to save this data?")
-                .setPositiveButton("Yes", (dialog, which) -> saveHome())
-                .setNegativeButton("No", null)
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
+        builder.setTitle("Konfirmasi Simpan")
+                .setMessage("Apakah kamu yakin untuk menyimpan data ini?")
+                .setPositiveButton("Ya", (dialog, which) -> saveHome())
+                .setNegativeButton("Tidak", null)
                 .show();
     }
 
     private void confirmCancel() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Confirm Cancel")
-                .setMessage("Are you sure you want to cancel and discard changes?")
-                .setPositiveButton("Yes", (dialog, which) -> requireActivity().getSupportFragmentManager().popBackStack())
-                .setNegativeButton("No", null)
+                .setTitle("Konfirmasi Batal?")
+                .setMessage("Apakah Anda yakin ingin membatalkan dan membuang perubahan?")
+                .setPositiveButton("Ya", (dialog, which) -> requireActivity().getSupportFragmentManager().popBackStack())
+                .setNegativeButton("Tidak", null)
                 .show();
     }
 

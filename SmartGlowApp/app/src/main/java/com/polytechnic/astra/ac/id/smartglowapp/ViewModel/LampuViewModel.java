@@ -12,7 +12,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Lampu;
-import com.polytechnic.astra.ac.id.smartglowapp.Model.Ruangan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class LampuViewModel extends ViewModel {
         return errorMessage;
     }
 
-    public void loadRooms(String houseId) {
+    public void loadLams(String houseId) {
         Query query = databaseRooms.orderByChild("ruanganId").equalTo(houseId);
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -50,7 +49,7 @@ public class LampuViewModel extends ViewModel {
                 }
                 rooms.setValue(roomList);
                 if (roomList.isEmpty()) {
-                    errorMessage.setValue("No rooms found.");
+                    errorMessage.setValue("No lamps found.");
                 }
             }
 

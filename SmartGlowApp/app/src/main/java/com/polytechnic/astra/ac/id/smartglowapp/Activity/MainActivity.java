@@ -16,22 +16,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            LoginFragment fragmentLogin = new LoginFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_login, fragmentLogin)
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        if (fragment == null) {
+            fragment = new LoginFragment();
+            fm.beginTransaction()
+                    .add(R.id.fragment_container, fragment)
                     .commit();
         }
-
-        //Clear Field edittext email dan password
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                Fragment loginFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_login);
-                if (loginFragment instanceof LoginFragment) {
-                    ((LoginFragment) loginFragment).clearFields();
-                }
-            }
-        });
     }
 }

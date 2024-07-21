@@ -3,7 +3,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/background_color">
+    android:background="@color/background_color"
+    android:id="@+id/fragment_updateDevice">
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,12 +25,12 @@
         android:layout_marginTop="10dp"
         android:fontFamily="sans-serif-light" />
 
-<!--    <EditText-->
-<!--        android:id="@+id/editTextName"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textColor="#FFFFFF"-->
-<!--        android:hint="Name" />-->
+    <!--    <EditText-->
+    <!--        android:id="@+id/editTextName"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:textColor="#FFFFFF"-->
+    <!--        android:hint="Name" />-->
 
     <EditText
         android:id="@+id/editTextName"
@@ -47,48 +48,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Serial Number"
+        android:text="Pin Awal"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
         android:layout_marginTop="10dp"
         android:fontFamily="sans-serif-light" />
-
-    <!--    <EditText-->
-    <!--        android:id="@+id/editTextName"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:textColor="#FFFFFF"-->
-    <!--        android:hint="Name" />-->
-
-    <EditText
-        android:id="@+id/editSerialNumber"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_below="@id/appNameTextView"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/input_background"
-        android:hint="Serial Number"
-        android:padding="12dp"
-        android:textColor="@color/input_text_color"
-        android:textColorHint="@color/hint_text_color"
-        android:textSize="16sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="jumlah pin"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:layout_marginTop="10dp"
-        android:fontFamily="sans-serif-light" />
-
-    <!--    <EditText-->
-    <!--        android:id="@+id/editTextName"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:textColor="#FFFFFF"-->
-    <!--        android:hint="Name" />-->
 
     <EditText
         android:id="@+id/editJumlahPin"
@@ -103,6 +67,30 @@
         android:textColor="@color/input_text_color"
         android:textColorHint="@color/hint_text_color"
         android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pin Akhir"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-light" />
+
+    <EditText
+        android:id="@+id/editPinAkhir"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/appNameTextView"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/input_background"
+        android:hint="Jumlah Pin"
+        android:padding="12dp"
+        android:textColor="@color/input_text_color"
+        android:textColorHint="@color/hint_text_color"
+        android:textSize="16sp" />
+
 
     <Button
         android:id="@+id/button_pick_color"

@@ -7,91 +7,29 @@ public class Lampu implements Serializable {
     private String ruanganId;
     private String nama;
     private String status;
+    private String status_lampu;
     private String creadby;
     private Integer red;
     private Integer green;
     private Integer blue;
-
-    public Lampu(String lampuId, String ruanganId, String nama, String status, String creadby, Integer red, Integer green, Integer blue, String serial_number, Integer pin) {
-        this.lampuId = lampuId;
-        this.ruanganId = ruanganId;
-        this.nama = nama;
-        this.status = status;
-        this.creadby = creadby;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.serial_number = serial_number;
-        this.pin = pin;
-    }
-
-    public String getSerial_number() {
-        return serial_number;
-    }
-
-    public void setSerial_number(String serial_number) {
-        this.serial_number = serial_number;
-    }
-
-    private String serial_number;
-
-
-    public Lampu(String lampuId, String ruanganId, String nama, String status, String creadby, Integer red, Integer green, Integer blue, Integer pin) {
-        this.lampuId = lampuId;
-        this.ruanganId = ruanganId;
-        this.nama = nama;
-        this.status = status;
-        this.creadby = creadby;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.pin = pin;
-    }
-
-    public Integer getRed() {
-        return red;
-    }
-
-    public void setRed(Integer red) {
-        this.red = red;
-    }
-
-    public Integer getGreen() {
-        return green;
-    }
-
-    public void setGreen(Integer green) {
-        this.green = green;
-    }
-
-    public Integer getBlue() {
-        return blue;
-    }
-
-    public void setBlue(Integer blue) {
-        this.blue = blue;
-    }
-
-    public Integer getPin() {
-        return pin;
-    }
-
-    public void setPin(Integer pin) {
-        this.pin = pin;
-    }
-
-    private Integer pin;
-
-
-    public Lampu(String lampuId, String ruanganId, String nama, String status, String creadby) {
-        this.lampuId = lampuId;
-        this.ruanganId = ruanganId;
-        this.nama = nama;
-        this.status = status;
-        this.creadby = creadby;
-    }
+    private Integer pin_awal;
+    private Integer pin_akhir;
 
     public Lampu() {
+    }
+
+    public Lampu(String lampuId, String ruanganId, String nama, String status, String status_lampu, String creadby, Integer red, Integer green, Integer blue, Integer pin_awal, Integer pin_akhir) {
+        this.lampuId = lampuId;
+        this.ruanganId = ruanganId;
+        this.nama = nama;
+        this.status = status;
+        this.status_lampu = status_lampu;
+        this.creadby = creadby;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+        this.pin_awal = pin_awal;
+        this.pin_akhir = pin_akhir;
     }
 
     public String getLampuId() {
@@ -126,11 +64,59 @@ public class Lampu implements Serializable {
         this.status = status;
     }
 
+    public String getStatus_lampu() {
+        return status_lampu;
+    }
+
+    public void setStatus_lampu(String status_lampu) {
+        this.status_lampu = status_lampu;
+    }
+
     public String getCreadby() {
         return creadby;
     }
 
     public void setCreadby(String creadby) {
         this.creadby = creadby;
+    }
+
+    public Integer getRed() {
+        return red;
+    }
+
+    public void setRed(Integer red) {
+        this.red = red;
+    }
+
+    public Integer getGreen() {
+        return green;
+    }
+
+    public void setGreen(Integer green) {
+        this.green = green;
+    }
+
+    public Integer getBlue() {
+        return blue;
+    }
+
+    public void setBlue(Integer blue) {
+        this.blue = blue;
+    }
+
+    public Integer getPin_awal() {
+        return pin_awal;
+    }
+
+    public void setPin_awal(Integer pin_awal) {
+        this.pin_awal = pin_awal;
+    }
+
+    public Integer getPin_akhir() {
+        return pin_akhir;
+    }
+
+    public void setPin_akhir(Integer pin_akhir) {
+        this.pin_akhir = pin_akhir;
     }
 }

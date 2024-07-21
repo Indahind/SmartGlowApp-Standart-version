@@ -47,7 +47,7 @@ public class RoomFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_room, menu);
+        inflater.inflate(R.menu.fragment_room_menu, menu);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class RoomFragment extends Fragment {
                     fragment.setArguments(args);
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_home, fragment);  // Pastikan ID container benar
+                    transaction.replace(R.id.fragment_container, fragment);  // Pastikan ID container benar
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
@@ -157,7 +157,7 @@ public class RoomFragment extends Fragment {
         fragment.setArguments(args);
 
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_home, fragment)
+                .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -169,9 +169,10 @@ public class RoomFragment extends Fragment {
         roomFragment.setArguments(args);
 
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_home, roomFragment)
+                .replace(R.id.fragment_container, roomFragment)
                 .addToBackStack(null)
                 .commit();
+        System.out.println("INI MAU KE LAMPU");
     }
 
     private class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomHolder> {

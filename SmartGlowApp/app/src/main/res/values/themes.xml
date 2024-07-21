@@ -7,5 +7,10 @@
         <item name="android:statusBarColor" tools:targetApi="1">@color/button_color</item>
     </style>
 
+    <!-- Custom AlertDialog style -->
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/dialog_back</item>
+    </style>
     <style name="Theme.SmartGlowApp" parent="Base.Theme.SmartGlowApp" />
 </resources>

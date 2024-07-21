@@ -99,7 +99,7 @@ public class LoginFragment extends Fragment {
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
                                         HomeFragment homeFragment = new HomeFragment();
-                                        fragmentTransaction.replace(R.id.fragment_home, homeFragment);
+                                        fragmentTransaction.replace(R.id.fragment_container, homeFragment);
                                         fragmentTransaction.addToBackStack(null);  // Optional: Add to back stack if needed
                                         fragmentTransaction.commit();
 

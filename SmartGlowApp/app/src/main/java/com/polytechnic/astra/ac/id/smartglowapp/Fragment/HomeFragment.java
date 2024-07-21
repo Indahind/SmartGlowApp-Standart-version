@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -46,7 +45,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_home, menu);
+        inflater.inflate(R.menu.fragment_home_menu, menu);
     }
 
     @Override
@@ -128,7 +127,7 @@ public class HomeFragment extends Fragment {
                     fragment.setArguments(args);
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_home, fragment);
+                    transaction.replace(R.id.fragment_container, fragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
@@ -143,7 +142,7 @@ public class HomeFragment extends Fragment {
         roomFragment.setArguments(args);
 
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_home, roomFragment)
+                .replace(R.id.fragment_container, roomFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -155,7 +154,7 @@ public class HomeFragment extends Fragment {
         fragment.setArguments(args);
 
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragment_home, fragment)
+                .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }
