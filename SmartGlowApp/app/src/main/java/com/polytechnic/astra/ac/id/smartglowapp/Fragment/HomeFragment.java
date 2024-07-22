@@ -58,6 +58,9 @@ public class HomeFragment extends Fragment {
         } else if (itemId == R.id.btn_logout) {
             confirmSave();
             return true;
+        } else if (itemId == R.id.btn_edit_profile){
+            navigateToUpdateUser();
+            return true;
         }
         else {
             return super.onOptionsItemSelected(item);
@@ -129,6 +132,25 @@ public class HomeFragment extends Fragment {
                     Bundle args = new Bundle();
                     args.putString("creadby", user.getUserId());
                     args.putString("owner", user.getNama());
+                    fragment.setArguments(args);
+
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            }
+        });
+    }
+
+    private void navigateToUpdateUser() {
+        loginViewModel.getLoggedInUser().observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if (user != null) {
+                    UpdateUserFragment fragment = new UpdateUserFragment();
+                    Bundle args = new Bundle();
+                    args.putSerializable("users", user);
                     fragment.setArguments(args);
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
@@ -250,7 +272,6 @@ public class HomeFragment extends Fragment {
                 editHouse.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Rumah rumah = houseList.get(getAdapterPosition());
                         Rumah rumah = activeHouseList.get(getAdapterPosition());
                         navigateToUpdateHouse(rumah);
                     }

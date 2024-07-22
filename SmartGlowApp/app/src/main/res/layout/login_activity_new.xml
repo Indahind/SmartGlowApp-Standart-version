@@ -46,22 +46,22 @@
         android:textSize="16sp"
         android:inputType="textPassword" />
 
-    <TextView
-        android:id="@+id/forgotPasswordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordEditText"
-        android:layout_marginTop="8dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/forgot_password"
-        android:textColor="@color/link_text_color"
-        android:textSize="14sp" />
+<!--    <TextView-->
+<!--        android:id="@+id/forgotPasswordTextView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/passwordEditText"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:text="@string/forgot_password"-->
+<!--        android:textColor="@color/link_text_color"-->
+<!--        android:textSize="14sp" />-->
 
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_below="@id/forgotPasswordTextView"
+        android:layout_below="@id/passwordEditText"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/button_color"
         android:text="@string/login_button"
@@ -77,6 +77,6 @@
         android:backgroundTint="@color/button_color"
         android:text="@string/register_button"
         android:textColor="@color/button_text_color"
-        android:textSize="16sp" />
+        android:textSize="12sp" />
 
 </RelativeLayout>

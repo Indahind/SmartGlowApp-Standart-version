@@ -21,15 +21,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.User;
 import com.polytechnic.astra.ac.id.smartglowapp.R;
 
-public class AddEditUserFragment extends Fragment {
+public class AddUserFragment extends Fragment {
 
     private EditText editTextName, editTextEmail, editTextPhone, editTextUsername, editTextPassword;
     private Button buttonSave;
     private DatabaseReference databaseUsers;
     private String userId;
 
-    public static AddEditUserFragment newInstance(String userId) {
-        AddEditUserFragment fragment = new AddEditUserFragment();
+    public static AddUserFragment newInstance(String userId) {
+        AddUserFragment fragment = new AddUserFragment();
         Bundle args = new Bundle();
         args.putString("USER_ID", userId);
         fragment.setArguments(args);
@@ -47,7 +47,7 @@ public class AddEditUserFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.activity_add_edit_user, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_user, container, false);
 
         // Initialize EditText
         editTextName = view.findViewById(R.id.editTextName);

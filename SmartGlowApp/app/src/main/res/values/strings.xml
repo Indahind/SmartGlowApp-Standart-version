@@ -6,4 +6,6 @@
     <string name="forgot_password">Forgot your password?</string>
     <string name="login_button">Log In</string>
     <string name="register_button">Don’t have an account? Register now</string>
+    <string name="google_maps_key">AIzaSyAs54_zjHmYrFj3HFXdd2Df8Um2K2qKgTs</string>
+
 </resources>

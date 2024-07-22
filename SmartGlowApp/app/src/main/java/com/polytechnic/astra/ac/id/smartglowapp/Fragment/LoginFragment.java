@@ -70,7 +70,7 @@ public class LoginFragment extends Fragment {
                 // Navigate to AddEditUserFragment
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_addUser, new AddEditUserFragment());
+                fragmentTransaction.replace(R.id.fragment_addUser, new AddUserFragment());
                 fragmentTransaction.addToBackStack(null); // Optional: add to back stack
                 fragmentTransaction.commit();
             }

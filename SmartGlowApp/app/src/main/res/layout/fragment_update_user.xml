@@ -4,13 +4,13 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/background_color"
-    android:id="@+id/fragment_addUser">
+    android:id="@+id/fragment_updateUser">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:text="Add User"
+        android:text="Settings Account"
         android:layout_marginTop="10dp"
         android:textColor="#FFFFFF"
         android:textSize="32sp"
@@ -161,9 +161,26 @@
         android:textColorHint="@color/hint_text_color"
         android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/buttonSave"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save" />
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp">
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Save" />
+
+        <Button
+            android:id="@+id/buttonDelete"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Deactive"
+            android:textColor="@android:color/holo_red_dark" />
+    </LinearLayout>
 </LinearLayout>
