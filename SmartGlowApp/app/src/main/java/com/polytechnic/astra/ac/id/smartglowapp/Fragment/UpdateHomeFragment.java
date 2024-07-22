@@ -41,9 +41,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Rumah;
 import com.polytechnic.astra.ac.id.smartglowapp.R;
 import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.HomeViewModel;
@@ -53,19 +55,17 @@ public class UpdateHomeFragment extends Fragment implements OnMapReadyCallback {
     private MapView mMapView;
     private EditText editTextName, editTextAlamat;
     private Button buttonSave, buttonDelete;
-    private DatabaseReference databaseHouses;
-
+    private DatabaseReference databaseHouses, databaseLamps, databaseRooms;
     private Rumah rumah;
     private GoogleMap mGoogleMap;
-
     private HomeViewModel homeViewModel;
-
     private FusedLocationProviderClient mFusedLocationClient;
     private double mLaTitude, mLaTitudeTemp, mLongTitude, mLongTitudeTemp;
     private static final int REQUEST_LOCATION_SETTINGS = 1001;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    private static final String ARG_ALAMAT = "alamat";
-    private static final String TAG = "EditAlamatFragment";
+    private static final String ARG_ALAMAT = "home";
+    private static final String TAG = "UpdateHomeFragment";
+    private boolean lightOnFound = false;
 
     public UpdateHomeFragment() {
         // Required empty public constructor
@@ -79,6 +79,9 @@ public class UpdateHomeFragment extends Fragment implements OnMapReadyCallback {
         }
         // Initialize Firebase Database reference
         databaseHouses = FirebaseDatabase.getInstance().getReference("smart_home/rumah");
+        databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/ruangan");
+        databaseLamps = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
+
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
@@ -157,23 +160,74 @@ public class UpdateHomeFragment extends Fragment implements OnMapReadyCallback {
 
     private void markHouseAsDeleted() {
         if (rumah != null) {
-            rumah.setStatus("Tidak Aktif");
-
-            databaseHouses.child(rumah.getRumahId()).setValue(rumah, new DatabaseReference.CompletionListener() {
+            databaseRooms.orderByChild("rumahId").equalTo(rumah.getRumahId()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                    if (databaseError == null) {
-                        Toast.makeText(requireContext(), "House marked as deleted successfully", Toast.LENGTH_SHORT).show();
-                        requireActivity().getSupportFragmentManager().popBackStack();
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to mark house as deleted: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onDataChange(@NonNull DataSnapshot roomsSnapshot) {
+                    if (!roomsSnapshot.exists()) {
+                        Toast.makeText(requireContext(), "No rooms found for this house.", Toast.LENGTH_SHORT).show();
+                        return;
                     }
+
+                    checkLightsInRooms(roomsSnapshot);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(requireContext(), "Failed to retrieve rooms: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
             Toast.makeText(requireContext(), "House data is null", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void checkLightsInRooms(@NonNull DataSnapshot roomsSnapshot) {
+        for (DataSnapshot roomSnapshot : roomsSnapshot.getChildren()) {
+            String roomId = roomSnapshot.child("ruanganId").getValue(String.class);
+
+            if (roomId != null) {
+                databaseLamps.orderByChild("ruanganId").equalTo(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot lightsSnapshot) {
+                        for (DataSnapshot lightSnapshot : lightsSnapshot.getChildren()) {
+                            String lightStatus = lightSnapshot.child("status_lampu").getValue(String.class);
+                            if ("on".equals(lightStatus)) {
+                                lightOnFound = true;
+                                Toast.makeText(requireContext(), "The light is on and the house cannot be removed", Toast.LENGTH_SHORT).show();
+                                return; // Exit the method if any light is on
+                            }
+                        }
+
+                        if (!lightOnFound && !lightsSnapshot.exists()) {
+                            proceedWithHouseDeletion();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(requireContext(), "Failed to check lights status: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    }
+
+    private void proceedWithHouseDeletion() {
+        rumah.setStatus("Tidak Aktif");
+
+        databaseHouses.child(rumah.getRumahId()).setValue(rumah, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                if (databaseError == null) {
+                    Toast.makeText(requireContext(), "House marked as deleted successfully", Toast.LENGTH_SHORT).show();
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                } else {
+                    Toast.makeText(requireContext(), "Failed to mark house as deleted: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
 
     private void confirmUpdate() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);

@@ -217,7 +217,7 @@ public class UpdateLampuFragment extends Fragment {
             // Cek status lampu
             if ("on".equals(lampu.getStatus_lampu())) {
                 // Jika lampu sedang menyala, tampilkan Toast dan tidak hapus
-                Toast.makeText(requireContext(), "Lampu sedang menyala, tidak bisa dihapus", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "The light is on and cannot be removed", Toast.LENGTH_SHORT).show();
             } else {
                 // Jika lampu tidak menyala, lanjutkan dengan proses penghapusan
                 lampu.setStatus("Tidak Aktif");

@@ -13,9 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.polytechnic.astra.ac.id.smartglowapp.Model.Lampu;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Ruangan;
 import com.polytechnic.astra.ac.id.smartglowapp.R;
 
@@ -85,6 +88,39 @@ public class UpdateRoomFragment extends Fragment {
         }
     }
 
+    private void checkAndDeleteRoom() {
+        if (room != null) {
+            // Query untuk memeriksa apakah ada lampu yang menyala di ruangan ini
+            databaseLamp.orderByChild("ruanganId").equalTo(room.getRuanganId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    boolean lampsOn = false;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Lampu lamp = snapshot.getValue(Lampu.class);
+                        if (lamp != null && "on".equals(lamp.getStatus_lampu())) {
+                            lampsOn = true;
+                            break;
+                        }
+                    }
+
+                    if (lampsOn) {
+                        Toast.makeText(requireContext(), "The light is on and cannot be removed", Toast.LENGTH_SHORT).show();
+                    } else {
+                        markRoomAsDeleted();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(requireContext(), "Failed to check lamps: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(requireContext(), "Room data is null", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     private void markRoomAsDeleted() {
         if (room != null) {
             room.setStatus("Tidak Aktif");
@@ -118,7 +154,7 @@ public class UpdateRoomFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
         builder.setTitle("Konfirmasi Simpan")
                 .setMessage("Apakah kamu yakin untuk menghapus data ini?")
-                .setPositiveButton("Ya", (dialog, which) -> markRoomAsDeleted())
+                .setPositiveButton("Ya", (dialog, which) -> checkAndDeleteRoom())
                 .setNegativeButton("Tidak", null)
                 .show();
     }
