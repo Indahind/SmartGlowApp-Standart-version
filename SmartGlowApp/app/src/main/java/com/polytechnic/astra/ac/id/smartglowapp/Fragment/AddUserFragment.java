@@ -2,6 +2,7 @@ package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,55 +95,74 @@ public class AddUserFragment extends Fragment {
         String username = editTextUsername.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if (!TextUtils.isEmpty(name)) {
+        if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(email) && !TextUtils.isEmpty(phone) && !TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(getActivity(), "Please enter a valid email.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!phone.matches("\\d{13,}")) {
+                Toast.makeText(getActivity(), "Please enter a valid phone number with at least 13 digits.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (userId == null) {
-                // Membaca data user untuk mendapatkan jumlah user saat ini
-                databaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+                // Check if username already exists
+                databaseUsers.orderByChild("username").equalTo(username).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        long userCount = dataSnapshot.getChildrenCount();
-                        String newUserId = String.valueOf(userCount + 1); // Generate ID berdasarkan jumlah user + 1
-                        String bro = "user_id_" + newUserId;
+                        if (dataSnapshot.exists()) {
+                            Toast.makeText(getActivity(), "Username already exist.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Username does not exist, proceed to save the new user
+                            databaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    long userCount = dataSnapshot.getChildrenCount();
+                                    String newUserId = String.valueOf(userCount + 1); // Generate ID based on user count + 1
+                                    String bro = "user_id_" + newUserId;
 
-                        User user = new User(bro, name, email, phone, username, "Aktif", password);
-                        // Simpan user ke Firebase Database
-                        databaseUsers.child(bro).setValue(user, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(@NonNull DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                if (databaseError == null) {
-                                    Toast.makeText(getActivity(), "User saved", Toast.LENGTH_SHORT).show();
-                                    // Tutup fragment setelah menyimpan
-                                    getActivity().getSupportFragmentManager().popBackStack();
-                                } else {
-                                    Toast.makeText(getActivity(), "Failed to save user: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                    User user = new User(bro, name, email, phone, username, "Aktif", password);
+                                    // Save user to Firebase Database
+                                    databaseUsers.child(bro).setValue(user).addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getActivity(), "User saved", Toast.LENGTH_SHORT).show();
+                                            // Close fragment after saving
+                                            getActivity().getSupportFragmentManager().popBackStack();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Failed to save user.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
-                            }
-                        });
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Toast.makeText(getActivity(), "Failed to get user count: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(getActivity(), "Failed to get user count: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Failed to check username: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
                 User user = new User(userId, name, email, phone, username, "Aktif", password);
-                // Update user di Firebase Database
-                databaseUsers.child(userId).setValue(user, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@NonNull DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                        if (databaseError == null) {
-                            Toast.makeText(getActivity(), "User updated", Toast.LENGTH_SHORT).show();
-                            // Tutup fragment setelah menyimpan
-                            getActivity().getSupportFragmentManager().popBackStack();
-                        } else {
-                            Toast.makeText(getActivity(), "Failed to update user: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                // Update user in Firebase Database
+                databaseUsers.child(userId).setValue(user).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getActivity(), "User updated", Toast.LENGTH_SHORT).show();
+                        // Close fragment after saving
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    } else {
+                        Toast.makeText(getActivity(), "Failed to update user: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         } else {
-            Toast.makeText(getActivity(), "Please enter a name", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please fill in all field.", Toast.LENGTH_SHORT).show();
         }
     }
 }

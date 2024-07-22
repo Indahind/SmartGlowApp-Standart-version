@@ -87,7 +87,7 @@ public class LoginFragment extends Fragment {
                         if (snapshot.exists()) {
                             for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                                 User user = userSnapshot.getValue(User.class);
-                                if (user != null) {
+                                if (user != null && user.getStatus().equals("Aktif")) {
                                     if (user.getPassword().equals(password)) {
                                         Toast.makeText(requireContext(), "Login successful!", Toast.LENGTH_SHORT).show();
 
@@ -107,6 +107,8 @@ public class LoginFragment extends Fragment {
                                     } else {
                                         Toast.makeText(requireContext(), "Incorrect password", Toast.LENGTH_SHORT).show();
                                     }
+                                } else {
+                                    Toast.makeText(requireContext(), "User not found", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } else {

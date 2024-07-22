@@ -28,7 +28,7 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 public class UpdateLampuFragment extends Fragment {
 
     private EditText editTextName, editJumlahPin, editPinAkhir;
-    private Button buttonSave, buttonPickColor;
+    private Button buttonSave, buttonPickColor, buttonDelete;
     private DatabaseReference databaseLamp;
     private String perangkatId;
     private View colorPreview;
@@ -55,7 +55,7 @@ public class UpdateLampuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_perangkat, container, false);
+        View view = inflater.inflate(R.layout.fragment_update_perangkat, container, false);
 
         // Initialize EditText and Buttons
         editTextName = view.findViewById(R.id.editTextName);
@@ -65,6 +65,7 @@ public class UpdateLampuFragment extends Fragment {
         buttonPickColor = view.findViewById(R.id.button_pick_color);
         colorPreview = view.findViewById(R.id.color_preview);
         buttonSave = view.findViewById(R.id.buttonSave);
+        buttonDelete = view.findViewById(R.id.buttonDelete);
 
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -89,7 +90,7 @@ public class UpdateLampuFragment extends Fragment {
 
             // Set OnClickListener for Save Button
             buttonSave.setOnClickListener(v -> confirmUpdate());
-            buttonSave.setOnClickListener(v -> confirmUpdate());
+            buttonDelete.setOnClickListener(v -> confirmDelete());
         }
 
         return view;
@@ -214,14 +215,14 @@ public class UpdateLampuFragment extends Fragment {
     private void markLampAsDeleted() {
         if (lampu != null) {
             // Cek status lampu
-            if ("On".equals(lampu.getStatus_lampu())) {
+            if ("on".equals(lampu.getStatus_lampu())) {
                 // Jika lampu sedang menyala, tampilkan Toast dan tidak hapus
                 Toast.makeText(requireContext(), "Lampu sedang menyala, tidak bisa dihapus", Toast.LENGTH_SHORT).show();
             } else {
                 // Jika lampu tidak menyala, lanjutkan dengan proses penghapusan
                 lampu.setStatus("Tidak Aktif");
 
-                databaseLamp.child(lampu.getRuanganId()).setValue(lampu, new DatabaseReference.CompletionListener() {
+                databaseLamp.child(lampu.getLampuId()).setValue(lampu, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                         if (databaseError == null) {

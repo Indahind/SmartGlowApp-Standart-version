@@ -189,8 +189,8 @@ public class RoomFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull RoomHolder holder, int position) {
-            Ruangan houseActive = activeRoomList.get(position);
-            holder.bind(houseActive);
+            Ruangan roomActive = activeRoomList.get(position);
+            holder.bind(roomActive);
         }
 
         @Override
@@ -203,11 +203,11 @@ public class RoomFragment extends Fragment {
             this.roomList.addAll(houseList);
             //this.activeHouseList.clear();
             //this.activeHouseList.addAll(houseList);
-            filterActiveHouses();
+            filterActiveRooms();
             notifyDataSetChanged();
         }
 
-        private void filterActiveHouses() {
+        private void filterActiveRooms() {
             activeRoomList.clear();
             for (Ruangan house : roomList) {
                 if ("Aktif".equals(house.getStatus())) {

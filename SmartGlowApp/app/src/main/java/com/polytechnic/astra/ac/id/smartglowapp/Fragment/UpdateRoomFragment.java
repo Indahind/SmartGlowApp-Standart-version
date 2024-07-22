@@ -23,7 +23,7 @@ public class UpdateRoomFragment extends Fragment {
 
     private EditText editTextName;
     private Button buttonSave, buttonDelete;
-    private DatabaseReference databaseRooms;
+    private DatabaseReference databaseRooms, databaseLamp;
     private Ruangan room;
 
     public UpdateRoomFragment() {
@@ -38,6 +38,7 @@ public class UpdateRoomFragment extends Fragment {
         }
         // Initialize Firebase Database reference
         databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/ruangan");
+        databaseLamp = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ public class UpdateUserFragment extends Fragment {
             editTextEmail.setText(user.getEmail());
             editTextPhone.setText(user.getNoTelpon());
             editTextUsername.setText(user.getUsername());
-            editTextPassword.setText(user.getUsername());
+            editTextPassword.setText(user.getPassword());
         }
 
         // Save button click listener
@@ -84,6 +85,15 @@ public class UpdateUserFragment extends Fragment {
         String username = editTextUsername.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(getActivity(), "Please enter a valid email.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!phone.matches("\\d{13,}")) {
+            Toast.makeText(getActivity(), "Please enter a valid phone number with at least 13 digits.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (user != null ) {
 

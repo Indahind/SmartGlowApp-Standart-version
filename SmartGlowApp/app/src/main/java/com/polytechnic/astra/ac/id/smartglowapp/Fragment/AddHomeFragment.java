@@ -58,6 +58,9 @@ public class AddHomeFragment extends Fragment implements OnMapReadyCallback {
     private EditText editTextName, editTextAlamat;
     private Button buttonSave, mBtnGetLocation;
     private DatabaseReference databaseUsers;
+
+    private boolean isLocationObtained = false;
+
     private String userId;
     private String creadby;
     private GoogleMap mGoogleMap;
@@ -149,8 +152,13 @@ public class AddHomeFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 checkLocationSettings();
+                isLocationObtained = true;
             }
         });
+
+
+
+
 
         // Initialize Save Button
         buttonSave.setOnClickListener(v -> confirmSave());
@@ -194,8 +202,8 @@ public class AddHomeFragment extends Fragment implements OnMapReadyCallback {
         String name = editTextName.getText().toString().trim();
         String alamat = editTextAlamat.getText().toString().trim();
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(alamat)) {
-            Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(alamat) || !isLocationObtained) {
+            Toast.makeText(requireContext(), "Please fill in all fields and obtain location", Toast.LENGTH_SHORT).show();
             return;
         }
 

@@ -42,7 +42,7 @@ public class LampuFragment extends Fragment {
     private LampuAdapter lampuAdapter;
     private LampuViewModel mLampuViewModel;
     private RoomViewModel mRoomViewModel;
-    private TextView txtHouseName, txtHouseAddress;
+    private TextView txtHouseName, txtHouseAddress, txt_owner;
     private List<Lampu> lampuList;
 
     public LampuFragment() {
@@ -96,6 +96,7 @@ public class LampuFragment extends Fragment {
         lampuAdapter = new LampuAdapter();
         lampuRecyclerView.setAdapter(lampuAdapter);
 
+        txt_owner = view.findViewById(R.id.txt_owner);
         txtHouseName = view.findViewById(R.id.txt_house_name);
         txtHouseAddress = view.findViewById(R.id.txt_house_address);
 
@@ -105,9 +106,11 @@ public class LampuFragment extends Fragment {
             Ruangan rumah = (Ruangan) args.getSerializable("ruangan");
             mRoomViewModel.setRooms(rumah);
             if (rumah != null) {
+                String creadby = rumah.getCreadby();
                 String houseName = rumah.getNama();
                 String houseAddress = rumah.getRuanganId();
 
+                txt_owner.setText(creadby);
                 txtHouseName.setText(houseName);
                 txtHouseAddress.setText(houseAddress);
 
@@ -162,10 +165,10 @@ public class LampuFragment extends Fragment {
         transaction.commit();
     }
 
-    private class LampuAdapter extends RecyclerView.Adapter<LampuAdapter.RoomHolder> {
+    private class LampuAdapter extends RecyclerView.Adapter<LampuAdapter.LampHolder> {
 
-        private List<Lampu> activeRoomList = new ArrayList<>();
-        private List<Lampu> roomList = new ArrayList<>();
+        private List<Lampu> activeLampList = new ArrayList<>();
+        private List<Lampu> lampList = new ArrayList<>();
         private DatabaseReference databaseReference;
 
         public LampuAdapter() {
@@ -174,39 +177,39 @@ public class LampuFragment extends Fragment {
 
         @NonNull
         @Override
-        public RoomHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public LampHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_lampu_list, parent, false);
-            return new RoomHolder(view);
+            return new LampHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RoomHolder holder, int position) {
-            Lampu houseActive = activeRoomList.get(position);
-            holder.bind(houseActive);
+        public void onBindViewHolder(@NonNull LampHolder holder, int position) {
+            Lampu lampActive = activeLampList.get(position);
+            holder.bind(lampActive);
         }
 
         @Override
         public int getItemCount() {
-            return activeRoomList.size();
+            return activeLampList.size();
         }
 
         public void setRoomsList(List<Lampu> houseList) {
-            this.roomList.clear();
-            this.roomList.addAll(houseList);
-            filterActiveHouses();
+            this.lampList.clear();
+            this.lampList.addAll(houseList);
+            filterActiveLamps();
             notifyDataSetChanged();
         }
 
-        private void filterActiveHouses() {
-            activeRoomList.clear();
-            for (Lampu house : roomList) {
+        private void filterActiveLamps() {
+            activeLampList.clear();
+            for (Lampu house : lampList) {
                 if ("Aktif".equals(house.getStatus())) {
-                    activeRoomList.add(house);
+                    activeLampList.add(house);
                 }
             }
         }
 
-        public class RoomHolder extends RecyclerView.ViewHolder {
+        public class LampHolder extends RecyclerView.ViewHolder {
 
             private ImageView imgDevice;
             private TextView txtData;
@@ -214,7 +217,7 @@ public class LampuFragment extends Fragment {
             private Switch btnDevice;
             private LinearLayout editRoom;
 
-            public RoomHolder(@NonNull View itemView) {
+            public LampHolder(@NonNull View itemView) {
                 super(itemView);
                 editRoom = itemView.findViewById(R.id.editLampu);
 
@@ -226,7 +229,7 @@ public class LampuFragment extends Fragment {
                 editRoom.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Lampu rumah = activeRoomList.get(getAdapterPosition());
+                        Lampu rumah = activeLampList.get(getAdapterPosition());
                         navigateToUpdateLampu(rumah);
                     }
                 });
