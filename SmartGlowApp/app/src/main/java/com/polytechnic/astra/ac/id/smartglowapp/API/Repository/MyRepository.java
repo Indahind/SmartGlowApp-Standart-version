@@ -34,9 +34,9 @@ public class MyRepository {
     private MyRepository(Context context){
         FirebaseApp.initializeApp(context);
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setDatabaseUrl("https://projectled-46877-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .setProjectId("projectled-46877")
-                .setApiKey("AIzaSyB34XHs_jTseAWmhwL2WvwBdEzmBf16yT4")
+                .setDatabaseUrl("https://smartapp-c4c42-default-rtdb.firebaseio.com/")
+                .setProjectId("smartapp-c4c42")
+                .setApiKey("AIzaSyBK1aDmCrN9S-VMmjbwlxvojm3IrRIXAiA")
                 .build();
         FirebaseApp.initializeApp(context, options, "Secondary");
 

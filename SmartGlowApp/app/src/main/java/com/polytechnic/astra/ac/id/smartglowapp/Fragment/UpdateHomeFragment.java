@@ -164,7 +164,7 @@ public class UpdateHomeFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot roomsSnapshot) {
                     if (!roomsSnapshot.exists()) {
-                        Toast.makeText(requireContext(), "No rooms found for this house.", Toast.LENGTH_SHORT).show();
+                        proceedWithHouseDeletion();
                         return;
                     }
 

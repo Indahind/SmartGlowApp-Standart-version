@@ -47,9 +47,9 @@ public class UpdateLampuFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            lampu = (Lampu) getArguments().getSerializable("lampu");
+            lampu = (Lampu) getArguments().getSerializable("perangkat");
         }
-        databaseLamp = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
+        databaseLamp = FirebaseDatabase.getInstance().getReference("smart_home/perangkat");
     }
 
     @Override
@@ -69,7 +69,7 @@ public class UpdateLampuFragment extends Fragment {
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            Lampu rumah = (Lampu) arguments.getSerializable("lampu");
+            Lampu rumah = (Lampu) arguments.getSerializable("perangkat");
 
             houseId = rumah.getRuanganId();
             System.out.println(rumah.getRuanganId());

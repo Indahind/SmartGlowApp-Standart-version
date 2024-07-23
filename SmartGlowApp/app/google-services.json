@@ -1,14 +1,14 @@
 {
   "project_info": {
-    "project_number": "1037897609391",
-    "firebase_url": "https://projectled-46877-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "projectled-46877",
-    "storage_bucket": "projectled-46877.appspot.com"
+    "project_number": "29058595967",
+    "firebase_url": "https://smartapp-c4c42-default-rtdb.firebaseio.com",
+    "project_id": "smartapp-c4c42",
+    "storage_bucket": "smartapp-c4c42.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1037897609391:android:55a32b7167ec92ce48245a",
+        "mobilesdk_app_id": "1:29058595967:android:a869f729dc6829ffbad34a",
         "android_client_info": {
           "package_name": "com.polytechnic.astra.ac.id.smartglowapp"
         }
@@ -16,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB34XHs_jTseAWmhwL2WvwBdEzmBf16yT4"
+          "current_key": "AIzaSyDNWQWkIHpv5y2O25nsRZvBe4V_Nrr3UtU"
         }
       ],
       "services": {

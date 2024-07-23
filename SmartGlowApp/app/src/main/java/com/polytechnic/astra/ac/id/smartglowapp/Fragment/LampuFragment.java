@@ -156,7 +156,7 @@ public class LampuFragment extends Fragment {
     private void navigateToUpdateLampu(Lampu lampu) {
         UpdateLampuFragment fragment = new UpdateLampuFragment();
         Bundle args = new Bundle();
-        args.putSerializable("lampu", lampu);
+        args.putSerializable("perangkat", lampu);
         fragment.setArguments(args);
 
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
@@ -172,7 +172,7 @@ public class LampuFragment extends Fragment {
         private DatabaseReference databaseReference;
 
         public LampuAdapter() {
-            this.databaseReference = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
+            this.databaseReference = FirebaseDatabase.getInstance().getReference("smart_home/perangkat");
         }
 
         @NonNull

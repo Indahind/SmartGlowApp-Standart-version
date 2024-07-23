@@ -24,7 +24,7 @@ public class LampuViewModel extends ViewModel {
     public LampuViewModel() {
         rooms = new MutableLiveData<>(new ArrayList<>());
         errorMessage = new MutableLiveData<>();
-        databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
+        databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/perangkat");
     }
 
     public LiveData<List<Lampu>> getRooms() {

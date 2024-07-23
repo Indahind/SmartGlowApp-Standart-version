@@ -58,7 +58,8 @@
         android:padding="12dp"
         android:textColor="@color/input_text_color"
         android:textColorHint="@color/hint_text_color"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:inputType="number"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -80,7 +81,8 @@
         android:padding="12dp"
         android:textColor="@color/input_text_color"
         android:textColorHint="@color/hint_text_color"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:inputType="number"/>
 
     <Button
         android:id="@+id/button_pick_color"

@@ -47,7 +47,7 @@ public class AddLampuFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        databaseLamps = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
+        databaseLamps = FirebaseDatabase.getInstance().getReference("smart_home/perangkat");
     }
 
     @Override
@@ -56,7 +56,7 @@ public class AddLampuFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_perangkat, container, false);
 
         // Initialize Firebase Database reference
-        databaseLamps = FirebaseDatabase.getInstance().getReference("smart_home/lampu");
+        databaseLamps = FirebaseDatabase.getInstance().getReference("smart_home/perangkat");
 
         // Initialize EditText and Buttons
         editTextName = view.findViewById(R.id.editTextName);
