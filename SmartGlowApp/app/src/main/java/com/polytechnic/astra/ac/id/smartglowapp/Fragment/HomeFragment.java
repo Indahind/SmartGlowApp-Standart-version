@@ -186,7 +186,6 @@ public class HomeFragment extends Fragment {
         args.putSerializable("rumah", house);
         args.putString("owner",userName);
         roomFragment.setArguments(args);
-
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, roomFragment)
                 .addToBackStack(null)

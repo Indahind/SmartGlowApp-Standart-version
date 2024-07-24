@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Ruangan;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Rumah;
-import com.polytechnic.astra.ac.id.smartglowapp.Model.User;
 import com.polytechnic.astra.ac.id.smartglowapp.R;
 import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.HomeViewModel;
 import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.RoomViewModel;
@@ -41,6 +40,7 @@ public class RoomFragment extends Fragment {
     private HomeViewModel mHomeViewModel;
     private TextView txtHouseName, txtHouseAddress, txtOwner;
     private List<Ruangan> ruanganList;
+    private String userName, houseName, houseAddress;
 
     public RoomFragment() {
     }
@@ -93,24 +93,23 @@ public class RoomFragment extends Fragment {
         roomAdapter = new RoomAdapter();
         roomRecyclerView.setAdapter(roomAdapter);
 
-        txtHouseName = view.findViewById(R.id.txt_house_name);
-        txtHouseAddress = view.findViewById(R.id.txt_house_address);
+        txtHouseName = view.findViewById(R.id.txt_room_name);
+        txtHouseAddress = view.findViewById(R.id.txt_house_name);
         txtOwner = view.findViewById(R.id.txt_owner);
 
         // Get data from arguments
         Bundle args = getArguments();
         if (args != null) {
             Rumah rumah = (Rumah) args.getSerializable("rumah");
-//            User user = (User) args.getSerializable("users/"+rumah.getCreadby());
             mHomeViewModel.setHouses(rumah);
             if (rumah != null) {
-                String houseName = rumah.getNama();
-                String houseAddress = rumah.getAlamat_rumah();
-                String owner = (String) args.getString("owner");
+                houseName = rumah.getNama();
+                houseAddress = rumah.getAlamat_rumah();
+                userName = (String) args.getString("owner");
 
                 txtHouseName.setText(houseName);
                 txtHouseAddress.setText(houseAddress);
-                txtOwner.setText(owner);
+                txtOwner.setText(userName);
 
                 mRoomViewModel.getRooms().observe(getViewLifecycleOwner(), new Observer<List<Ruangan>>() {
                     @Override
@@ -168,6 +167,8 @@ public class RoomFragment extends Fragment {
         LampuFragment roomFragment = new LampuFragment();
         Bundle args = new Bundle();
         args.putSerializable("ruangan", house);
+        args.putString("owner",userName);
+        args.putString("houseName",houseName);
         roomFragment.setArguments(args);
 
         getParentFragmentManager().beginTransaction()
@@ -221,13 +222,13 @@ public class RoomFragment extends Fragment {
 
         public class RoomHolder extends RecyclerView.ViewHolder {
 
-            private TextView roomName, roomId;
+            private TextView roomName, namaUser;
             private ImageView showDetails;
             private LinearLayout editRoom;
 
             public RoomHolder(@NonNull View itemView) {
                 super(itemView);
-                roomId = itemView.findViewById(R.id.txtDataDetail1);
+                namaUser = itemView.findViewById(R.id.txtDataDetail1);
                 roomName = itemView.findViewById(R.id.txtData1);
                 editRoom = itemView.findViewById(R.id.editRoom);
                 showDetails = itemView.findViewById(R.id.btn_show);
@@ -251,7 +252,7 @@ public class RoomFragment extends Fragment {
             }
                 public void bind(Ruangan house) {
                     roomName.setText(house.getNama());
-                    roomId.setText(house.getRuanganId());
+                    namaUser.setText(userName);
                 }
         }
     }

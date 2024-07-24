@@ -42,7 +42,7 @@ public class LampuFragment extends Fragment {
     private LampuAdapter lampuAdapter;
     private LampuViewModel mLampuViewModel;
     private RoomViewModel mRoomViewModel;
-    private TextView txtHouseName, txtHouseAddress, txt_owner;
+    private TextView txtRoomName, txtHouseName, txt_owner;
     private List<Lampu> lampuList;
 
     public LampuFragment() {
@@ -97,22 +97,23 @@ public class LampuFragment extends Fragment {
         lampuRecyclerView.setAdapter(lampuAdapter);
 
         txt_owner = view.findViewById(R.id.txt_owner);
+        txtRoomName = view.findViewById(R.id.txt_room_name);
         txtHouseName = view.findViewById(R.id.txt_house_name);
-        txtHouseAddress = view.findViewById(R.id.txt_house_address);
 
         // Get data from arguments
         Bundle args = getArguments();
         if (args != null) {
-            Ruangan rumah = (Ruangan) args.getSerializable("ruangan");
-            mRoomViewModel.setRooms(rumah);
-            if (rumah != null) {
-                String creadby = rumah.getCreadby();
-                String houseName = rumah.getNama();
-                String houseAddress = rumah.getRuanganId();
+            Ruangan ruangan = (Ruangan) args.getSerializable("ruangan");
+            String owner = (String) args.getString("owner");
+            String houseName = (String) args.getString("houseName");
 
-                txt_owner.setText(creadby);
+            mRoomViewModel.setRooms(ruangan);
+            if (ruangan != null) {
+                String roomName = ruangan.getNama();
+
+                txt_owner.setText(owner);
+                txtRoomName.setText(roomName);
                 txtHouseName.setText(houseName);
-                txtHouseAddress.setText(houseAddress);
 
                 mLampuViewModel.getRooms().observe(getViewLifecycleOwner(), new Observer<List<Lampu>>() {
                     @Override
