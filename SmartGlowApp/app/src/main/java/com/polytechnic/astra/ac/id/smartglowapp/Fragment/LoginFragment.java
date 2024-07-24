@@ -1,6 +1,7 @@
 package com.polytechnic.astra.ac.id.smartglowapp.Fragment;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +26,7 @@ import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.LoginViewModel;
 
 public class LoginFragment extends Fragment {
 
-    private EditText usernameEditText;
-    private EditText passwordEditText;
+    private EditText usernameEditText, passwordEditText;
     private Button loginButton, donthaveaccount;
     private DatabaseReference database;
     private LoginViewModel loginViewModel;
@@ -38,12 +38,14 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.login_activity_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         usernameEditText = view.findViewById(R.id.usernameEditText);
         passwordEditText = view.findViewById(R.id.passwordEditText);
         loginButton = view.findViewById(R.id.loginButton);
         donthaveaccount = view.findViewById(R.id.registerButton);
+
+        passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         // Initialize Firebase Database reference
         database = FirebaseDatabase.getInstance().getReference("smart_home").child("users");
@@ -103,7 +105,7 @@ public class LoginFragment extends Fragment {
                                         fragmentTransaction.addToBackStack(null);  // Optional: Add to back stack if needed
                                         fragmentTransaction.commit();
 
-                                        clearFields(); // Clear fields after successful login
+                                        clearFields();
                                     } else {
                                         Toast.makeText(requireContext(), "Incorrect password", Toast.LENGTH_SHORT).show();
                                     }
