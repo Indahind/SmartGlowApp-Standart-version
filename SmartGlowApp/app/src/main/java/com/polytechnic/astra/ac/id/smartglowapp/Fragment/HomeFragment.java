@@ -38,6 +38,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private LoginViewModel loginViewModel;
     private TextView userWelcome;
+    private String userName;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -103,7 +104,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(User user) {
                 if (user != null) {
-                    String userName = user.getNama();
+                    userName = user.getNama();
                     userWelcome.setText("Welcome, " + userName);
 
                     homeViewModel.getHouses().observe(getViewLifecycleOwner(), new Observer<List<Rumah>>() {
@@ -183,6 +184,7 @@ public class HomeFragment extends Fragment {
         RoomFragment roomFragment = new RoomFragment();
         Bundle args = new Bundle();
         args.putSerializable("rumah", house);
+        args.putString("owner",userName);
         roomFragment.setArguments(args);
 
         getParentFragmentManager().beginTransaction()

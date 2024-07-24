@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Ruangan;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Rumah;
+import com.polytechnic.astra.ac.id.smartglowapp.Model.User;
 import com.polytechnic.astra.ac.id.smartglowapp.R;
 import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.HomeViewModel;
 import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.RoomViewModel;
@@ -100,11 +101,12 @@ public class RoomFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             Rumah rumah = (Rumah) args.getSerializable("rumah");
+//            User user = (User) args.getSerializable("users/"+rumah.getCreadby());
             mHomeViewModel.setHouses(rumah);
             if (rumah != null) {
                 String houseName = rumah.getNama();
                 String houseAddress = rumah.getAlamat_rumah();
-                String owner = rumah.getCreadby();
+                String owner = (String) args.getString("owner");
 
                 txtHouseName.setText(houseName);
                 txtHouseAddress.setText(houseAddress);

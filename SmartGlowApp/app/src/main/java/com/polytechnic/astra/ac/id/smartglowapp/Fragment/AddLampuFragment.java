@@ -170,10 +170,16 @@ public class AddLampuFragment extends Fragment {
         try {
             jumlahPin = Integer.parseInt(pinStr);
             pin_akhir = Integer.parseInt(pinEnd);
+            if ((jumlahPin < 0 || jumlahPin > 144 )|| (pin_akhir < 0 || pin_akhir > 144 )){
+                Toast.makeText(getActivity(), "Pin hanya boleh antara 0 sampai 144", Toast.LENGTH_SHORT).show();
+                return;
+            }
         } catch (NumberFormatException e) {
             Toast.makeText(getActivity(), "Please enter a valid pin number", Toast.LENGTH_SHORT).show();
             return;
         }
+
+
 
         if (perangkatId == null) {
             // Membaca data house untuk mendapatkan jumlah house saat ini
@@ -211,6 +217,7 @@ public class AddLampuFragment extends Fragment {
     }
 
     private void confirmSave() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog);
         builder.setTitle("Konfirmasi Simpan")
                 .setMessage("Apakah kamu yakin untuk menyimpan data ini?")

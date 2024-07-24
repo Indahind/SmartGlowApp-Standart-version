@@ -170,6 +170,11 @@ public class UpdateLampuFragment extends Fragment {
             return;
         }
 
+        if ((jumlahPin < 0 || jumlahPin > 144 )|| (pin_akhir < 0 || pin_akhir > 144 )){
+            Toast.makeText(getActivity(), "Pin hanya boleh antara 0 sampai 144", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (perangkatId == null) {
             // Membaca data house untuk mendapatkan jumlah house saat ini
             databaseLamp.addListenerForSingleValueEvent(new ValueEventListener() {
