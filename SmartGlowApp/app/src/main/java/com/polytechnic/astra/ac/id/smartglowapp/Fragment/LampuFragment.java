@@ -115,7 +115,7 @@ public class LampuFragment extends Fragment {
                 txtRoomName.setText(roomName);
                 txtHouseName.setText(houseName);
 
-                mLampuViewModel.getRooms().observe(getViewLifecycleOwner(), new Observer<List<Lampu>>() {
+                mLampuViewModel.getLamps().observe(getViewLifecycleOwner(), new Observer<List<Lampu>>() {
                     @Override
                     public void onChanged(List<Lampu> rooms) {
                         if (rooms != null) {

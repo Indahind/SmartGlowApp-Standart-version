@@ -17,26 +17,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LampuViewModel extends ViewModel {
-    private MutableLiveData<List<Lampu>> rooms;
+    private MutableLiveData<List<Lampu>> lamps;
     private MutableLiveData<String> errorMessage;
     private DatabaseReference databaseRooms;
 
     public LampuViewModel() {
-        rooms = new MutableLiveData<>(new ArrayList<>());
+        lamps = new MutableLiveData<>(new ArrayList<>());
         errorMessage = new MutableLiveData<>();
         databaseRooms = FirebaseDatabase.getInstance().getReference("smart_home/perangkat");
     }
 
-    public LiveData<List<Lampu>> getRooms() {
-        return rooms;
+    public LiveData<List<Lampu>> getLamps() {
+        return lamps;
     }
 
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
 
-    public void loadLams(String houseId) {
-        Query query = databaseRooms.orderByChild("ruanganId").equalTo(houseId);
+    public void loadLams(String ruanganId) {
+        Query query = databaseRooms.orderByChild("ruanganId").equalTo(ruanganId);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -47,7 +47,7 @@ public class LampuViewModel extends ViewModel {
                         roomList.add(room);
                     }
                 }
-                rooms.setValue(roomList);
+                lamps.setValue(roomList);
                 if (roomList.isEmpty()) {
                     errorMessage.setValue("No lamps found.");
                 }

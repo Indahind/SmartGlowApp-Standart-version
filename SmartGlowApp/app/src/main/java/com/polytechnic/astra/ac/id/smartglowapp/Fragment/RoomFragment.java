@@ -22,10 +22,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.polytechnic.astra.ac.id.smartglowapp.Model.Lampu;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Ruangan;
 import com.polytechnic.astra.ac.id.smartglowapp.Model.Rumah;
 import com.polytechnic.astra.ac.id.smartglowapp.R;
 import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.HomeViewModel;
+import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.LampuViewModel;
 import com.polytechnic.astra.ac.id.smartglowapp.ViewModel.RoomViewModel;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class RoomFragment extends Fragment {
     private RoomAdapter roomAdapter;
     private RoomViewModel mRoomViewModel;
     private HomeViewModel mHomeViewModel;
+    private LampuViewModel mLampuViewModel;
     private TextView txtHouseName, txtHouseAddress, txtOwner;
     private List<Ruangan> ruanganList;
     private String userName, houseName, houseAddress;
@@ -67,6 +70,7 @@ public class RoomFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mRoomViewModel = new ViewModelProvider(this).get(RoomViewModel.class);
         mHomeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        mLampuViewModel = new ViewModelProvider(this).get(LampuViewModel.class);
         setHasOptionsMenu(true);
 
         // Load rooms using RoomViewModel
@@ -122,6 +126,16 @@ public class RoomFragment extends Fragment {
                         }
                     }
                 });
+
+                mLampuViewModel.getLamps().observe(getViewLifecycleOwner(), new Observer<List<Lampu>>() {
+                    @Override
+                    public void onChanged(List<Lampu> lamps) {
+                        if (lamps != null) {
+                            roomAdapter.setLampsList(lamps);
+                        }
+                    }
+                });
+
             }
         }
 
@@ -182,6 +196,8 @@ public class RoomFragment extends Fragment {
 
         private List<Ruangan> activeRoomList = new ArrayList<>();
         private List<Ruangan> roomList = new ArrayList<>();
+        private List<Lampu> lampList = new ArrayList<>();
+        private List<Lampu> activeLampList = new ArrayList<>();
 
         @NonNull
         @Override
@@ -204,9 +220,14 @@ public class RoomFragment extends Fragment {
         public void setRoomsList(List<Ruangan> houseList) {
             this.roomList.clear();
             this.roomList.addAll(houseList);
-            //this.activeHouseList.clear();
-            //this.activeHouseList.addAll(houseList);
             filterActiveRooms();
+            notifyDataSetChanged();
+        }
+
+        public void setLampsList(List<Lampu> lamps) {
+            this.lampList.clear();
+            this.lampList.addAll(lamps);
+            filterActiveLamps();
             notifyDataSetChanged();
         }
 
@@ -219,16 +240,35 @@ public class RoomFragment extends Fragment {
             }
         }
 
+        private void filterActiveLamps() {
+            activeLampList.clear();
+            for (Lampu lampu : lampList) {
+                if ("Aktif".equals(lampu.getStatus())) {
+                    activeLampList.add(lampu);
+                }
+            }
+        }
+
+        private int getLampCountForRoom(String roomId) {
+            int count = 0;
+            for (Lampu lamp : activeLampList) {
+                if (lamp.getRuanganId().equals(roomId)) {
+                    count++;
+                }
+            }
+            System.out.println("Room ID: " + roomId + " has " + count + " active lamps.");
+            return count;
+        }
 
         public class RoomHolder extends RecyclerView.ViewHolder {
 
-            private TextView roomName, namaUser;
+            private TextView roomName, lampCount;
             private ImageView showDetails;
             private LinearLayout editRoom;
 
             public RoomHolder(@NonNull View itemView) {
                 super(itemView);
-                namaUser = itemView.findViewById(R.id.txtDataDetail1);
+                lampCount = itemView.findViewById(R.id.txtDataDetail1);
                 roomName = itemView.findViewById(R.id.txtData1);
                 editRoom = itemView.findViewById(R.id.editRoom);
                 showDetails = itemView.findViewById(R.id.btn_show);
@@ -244,15 +284,16 @@ public class RoomFragment extends Fragment {
                 editRoom.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Ruangan rumah = activeRoomList.get(getAdapterPosition());
-                        navigateToUpdateRoom(rumah);
+                        Ruangan ruangan = activeRoomList.get(getAdapterPosition());
+                        navigateToUpdateRoom(ruangan);
                     }
                 });
 
             }
-                public void bind(Ruangan house) {
-                    roomName.setText(house.getNama());
-                    namaUser.setText(userName);
+                public void bind(Ruangan ruangan) {
+                    roomName.setText(ruangan.getNama());
+                    System.out.println(ruangan.getRuanganId());
+                    //lampCount.setText("There are "+String.valueOf(getLampCountForRoom(ruangan.getRuanganId())+" lamp."));
                 }
         }
     }

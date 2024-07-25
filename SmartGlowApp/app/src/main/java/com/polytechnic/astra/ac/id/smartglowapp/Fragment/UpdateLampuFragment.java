@@ -150,13 +150,11 @@ public class UpdateLampuFragment extends Fragment {
 
     private void updateLampu() {
         String name = editTextName.getText().toString().trim();
-//        String serial = editSerialNumber.getText().toString().trim();
         String pinStr = editJumlahPin.getText().toString().trim();
         String pinEnd = editPinAkhir.getText().toString().trim();
 
-
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(pinStr)) {
-            Toast.makeText(getActivity(), "Please enter all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please enter all fields and pick a color", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -175,46 +173,46 @@ public class UpdateLampuFragment extends Fragment {
             return;
         }
 
-        if (perangkatId == null) {
-            // Membaca data house untuk mendapatkan jumlah house saat ini
-            databaseLamp.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    long houseCount = dataSnapshot.getChildrenCount();
-                    String newhouseId = String.valueOf(houseCount + 1); // Generate ID berdasarkan jumlah house + 1
-                    String bro = "lampu_id_" + newhouseId;
+        databaseLamp.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean overlap = false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Lampu existingLampu = snapshot.getValue(Lampu.class);
+                    if (existingLampu != null && !existingLampu.getLampuId().equals(perangkatId)) {
+                        int existingPinStart = existingLampu.getPin_awal();
+                        int existingPinEnd = existingLampu.getPin_akhir();
 
-                    Lampu perangkat = new Lampu(bro, houseId, name,"Aktif","off", createdBy, red, green, blue, jumlahPin, pin_akhir);
-                    // Simpan house ke Firebase Database
-                    databaseLamp.child(bro).setValue(perangkat, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(@NonNull DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                            if (databaseError == null) {
-                                Toast.makeText(getActivity(), "Perangkat saved", Toast.LENGTH_SHORT).show();
-                                getParentFragmentManager().popBackStack(); // Kembali ke fragment sebelumnya
-                            } else {
-                                Toast.makeText(getActivity(), "Failed to save Perangkat: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                        // Check for overlap condition
+                        if ((jumlahPin >= existingPinStart && jumlahPin <= existingPinEnd) ||
+                                (pin_akhir >= existingPinStart && pin_akhir <= existingPinEnd) ||
+                                (jumlahPin <= existingPinStart && pin_akhir >= existingPinEnd)) {
+                            overlap = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (overlap) {
+                    Toast.makeText(getActivity(), "Pin range overlaps with existing lamps", Toast.LENGTH_SHORT).show();
+                } else {
+                    Lampu perangkat = new Lampu(perangkatId, houseId, name, "Aktif", "off", createdBy, red, green, blue, jumlahPin, pin_akhir);
+                    databaseLamp.child(perangkatId).setValue(perangkat, (databaseError, databaseReference) -> {
+                        if (databaseError == null) {
+                            Toast.makeText(getActivity(), "Perangkat updated", Toast.LENGTH_SHORT).show();
+                            getParentFragmentManager().popBackStack();
+                        } else {
+                            Toast.makeText(getActivity(), "Failed to update perangkat: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(getActivity(), "Failed to get Perangkat count: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            Lampu perangkat = new Lampu(perangkatId, houseId, name, "Aktif", "off", createdBy, red, green, blue, jumlahPin, pin_akhir);
-            databaseLamp.child(perangkatId).setValue(perangkat, (databaseError, databaseReference) -> {
-                if (databaseError == null) {
-                    Toast.makeText(getActivity(), "Perangkat updated", Toast.LENGTH_SHORT).show();
-                    getParentFragmentManager().popBackStack();
-                } else {
-                    Toast.makeText(getActivity(), "Failed to update perangkat: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getActivity(), "Failed to check existing lamps: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void markLampAsDeleted() {

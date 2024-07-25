@@ -186,28 +186,46 @@ public class AddLampuFragment extends Fragment {
             databaseLamps.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    long houseCount = dataSnapshot.getChildrenCount();
-                    String newhouseId = String.valueOf(houseCount + 1); // Generate ID berdasarkan jumlah house + 1
-                    String bro = "lampu_id_" + newhouseId;
+                    boolean overlap = false;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Lampu existingLampu = snapshot.getValue(Lampu.class);
+                        if (existingLampu != null) {
+                            int existingPinStart = existingLampu.getPin_awal();
+                            int existingPinEnd = existingLampu.getPin_akhir();
 
-                    Lampu perangkat = new Lampu(bro, houseId, name, "Aktif", "off", createdBy, red, green, blue, jumlahPin, pin_akhir);
-                    // Simpan house ke Firebase Database
-                    databaseLamps.child(bro).setValue(perangkat, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(@NonNull DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                            if (databaseError == null) {
-                                Toast.makeText(getActivity(), "Perangkat saved", Toast.LENGTH_SHORT).show();
-                                getParentFragmentManager().popBackStack(); // Kembali ke fragment sebelumnya
-                            } else {
-                                Toast.makeText(getActivity(), "Failed to save Perangkat: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                            // Check for overlap condition
+                            if ((jumlahPin >= existingPinStart && jumlahPin <= existingPinEnd) ||
+                                    (pin_akhir >= existingPinStart && pin_akhir <= existingPinEnd) ||
+                                    (jumlahPin <= existingPinStart && pin_akhir >= existingPinEnd)) {
+                                overlap = true;
+                                break;
                             }
                         }
-                    });
+                    }
+
+                    if (overlap) {
+                        Toast.makeText(getActivity(), "Pin range overlaps with existing lamps", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Proceed to save the new lamp data
+                        String newLampuId = databaseLamps.push().getKey();
+                        Lampu newLampu = new Lampu(newLampuId, houseId, name, "Aktif", "off", createdBy, red, green, blue, jumlahPin, pin_akhir);
+                        databaseLamps.child(newLampuId).setValue(newLampu, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                if (error == null) {
+                                    Toast.makeText(getActivity(), "Perangkat saved", Toast.LENGTH_SHORT).show();
+                                    getParentFragmentManager().popBackStack(); // Go back to previous fragment
+                                } else {
+                                    Toast.makeText(getActivity(), "Failed to save Perangkat: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(getActivity(), "Failed to get Perangkat count: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Failed to check existing lamps: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
