@@ -34,7 +34,7 @@ public class UpdateLampuFragment extends Fragment {
     private View colorPreview;
     private int currentColor;
     private Integer red = 0, blue = 0, green = 0, pin = 0;
-    private String houseId;
+    private String ruanganId;
     private String createdBy;
     private Lampu lampu;
 
@@ -71,7 +71,7 @@ public class UpdateLampuFragment extends Fragment {
         if (arguments != null) {
             Lampu rumah = (Lampu) arguments.getSerializable("perangkat");
 
-            houseId = rumah.getRuanganId();
+            ruanganId = rumah.getRuanganId();
             System.out.println(rumah.getRuanganId());
             createdBy = rumah.getCreadby();
             System.out.println(createdBy);
@@ -173,7 +173,7 @@ public class UpdateLampuFragment extends Fragment {
             return;
         }
 
-        databaseLamp.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseLamp.orderByChild("ruanganId").equalTo(ruanganId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean overlap = false;
@@ -196,7 +196,7 @@ public class UpdateLampuFragment extends Fragment {
                 if (overlap) {
                     Toast.makeText(getActivity(), "Pin range overlaps with existing lamps", Toast.LENGTH_SHORT).show();
                 } else {
-                    Lampu perangkat = new Lampu(perangkatId, houseId, name, "Aktif", "off", createdBy, red, green, blue, jumlahPin, pin_akhir);
+                    Lampu perangkat = new Lampu(perangkatId, ruanganId, name, "Aktif", "off", createdBy, red, green, blue, jumlahPin, pin_akhir);
                     databaseLamp.child(perangkatId).setValue(perangkat, (databaseError, databaseReference) -> {
                         if (databaseError == null) {
                             Toast.makeText(getActivity(), "Perangkat updated", Toast.LENGTH_SHORT).show();

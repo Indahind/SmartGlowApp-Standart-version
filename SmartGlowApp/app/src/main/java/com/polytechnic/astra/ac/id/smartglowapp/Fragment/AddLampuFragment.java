@@ -37,7 +37,7 @@ public class AddLampuFragment extends Fragment {
     private View colorPreview;
     private int currentColor;
     private Integer red = 0, blue = 0, green = 0, pin = 0;
-    private String houseId;
+    private String ruanganId;
     private String createdBy;// Assuming you have houseId passed from previous fragment
 
     public AddLampuFragment() {
@@ -71,7 +71,7 @@ public class AddLampuFragment extends Fragment {
         if (arguments != null) {
             Ruangan rumah = (Ruangan) arguments.getSerializable("ruangan");
 
-            houseId = rumah.getRuanganId();
+            ruanganId = rumah.getRuanganId();
             System.out.println(rumah.getRuanganId());
             createdBy = rumah.getCreadby();
             System.out.println(createdBy);
@@ -183,7 +183,7 @@ public class AddLampuFragment extends Fragment {
 
         if (perangkatId == null) {
             // Membaca data house untuk mendapatkan jumlah house saat ini
-            databaseLamps.addListenerForSingleValueEvent(new ValueEventListener() {
+            databaseLamps.orderByChild("ruanganId").equalTo(ruanganId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     boolean overlap = false;
@@ -208,7 +208,7 @@ public class AddLampuFragment extends Fragment {
                     } else {
                         // Proceed to save the new lamp data
                         String newLampuId = databaseLamps.push().getKey();
-                        Lampu newLampu = new Lampu(newLampuId, houseId, name, "Aktif", "off", createdBy, red, green, blue, jumlahPin, pin_akhir);
+                        Lampu newLampu = new Lampu(newLampuId, ruanganId, name, "Aktif", "off", createdBy, red, green, blue, jumlahPin, pin_akhir);
                         databaseLamps.child(newLampuId).setValue(newLampu, new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
